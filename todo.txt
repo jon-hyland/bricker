@@ -1,0 +1,12 @@
+============================
+ BRICKER TETRIS GAME - TODO
+============================
+- Create primary background surface
+  * 10x20 grid with border and grid lines
+  * Stats area on left
+  * Next brick area on right
+- Define basic brick classes
+- Drop random bricks on grid
+- Render it
+
+
