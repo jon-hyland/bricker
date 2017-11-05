@@ -14,9 +14,9 @@ class Matrix:
             self.matrix[0][y] = 1
             self.matrix[11][y] = 1
 
-    def add_brick(self, brick, point):
+    def add_brick(self, brick):
         for x in range(0, brick.width):
             for y in range(0, brick.height):
                 if brick.grid[x][y] == 1:
-                    self.matrix[x + point[0]][y + point[1]] = 1
-                    self.color[x + point[0]][y + point[1]] = brick.color
+                    self.matrix[x + brick.x][y + brick.y] = 1
+                    self.color[x + brick.x][y + brick.y] = brick.color

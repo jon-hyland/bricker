@@ -1,16 +1,7 @@
-class Brick:
-    shape_num = 0
-    width = 0
-    height = 0
-    grid = 0
-    color = (0, 0, 0)
-    x = 0
-    y = 0
-    top_space = 0
-    bottom_space = 0
-    # left_space = 0
-    # right_space = 0
+from time import perf_counter
 
+
+class Brick:
     def __init__(self, shape_num):
         self.shape_num = shape_num
         if shape_num == 1:
@@ -76,31 +67,37 @@ class Brick:
             self.grid[1][1] = 1
             self.grid[2][1] = 1
             self.color = 229, 0, 0
+        self.top_space = self.get_top_space()
+        self.bottom_space = self.get_bottom_space()
+        self.x = int((12 - self.width) / 2)
+        self.y = 1 - self.top_space
+        self.last_drop_time = perf_counter()
 
-        self.top_space = 0
+    def get_top_space(self):
+        top_space = 0
         for y in range(0, self.height):
             empty = True
             for x in range(0, self.width):
                 if self.grid[x][y] == 1:
                     empty = False
             if empty:
-                self.top_space += 1
+                top_space += 1
             else:
                 break
+        return top_space
 
-        self.bottom_space = 0
+    def get_bottom_space(self):
+        bottom_space = 0
         for y in reversed(range(0, self.height)):
             empty = True
             for x in range(0, self.width):
                 if self.grid[x][y] == 1:
                     empty = False
             if empty:
-                self.bottom_space += 1
+                bottom_space += 1
             else:
                 break
-
-        self.x = int((12 - self.width) / 2)
-        self.y = 1 - self.top_space
+        return bottom_space
 
     def collision(self, matrix):
         for x in range(0, self.width):
@@ -123,6 +120,26 @@ class Brick:
         self.y += 1
         if self.collision(matrix):
             self.y -= 1
+            return True
+        return False
+        # for x in range(0, self.width):
+        #     bottom_brick_row = self.height - 1
+        #     matrix_x = x + self.x
+        #     next_matrix_row = bottom_brick_row + self.y + 1
+        #     if (self.grid[x][bottom_brick_row] == 1) \
+        #             and (matrix[matrix_x][next_matrix_row] == 1):
+        #         return True
+        # return False
+
+    def drop_down(self, matrix):
+        self.last_drop_time = perf_counter()
+        return self.move_down(matrix)
+
+    def is_drop_time(self, interval):
+        now = perf_counter()
+        elapsed = now - self.last_drop_time
+        drop_time = elapsed >= interval
+        return drop_time
 
     def rotate(self, matrix):
         new_grid = [[0 for x in range(self.width)] for y in range(self.height)]

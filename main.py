@@ -3,7 +3,6 @@ import sys
 from matrix import Matrix
 from random import randint
 from brick import Brick
-from repeated_timer import RepeatedTimer
 
 # globals
 __screen_size = 1000, 700
@@ -27,45 +26,65 @@ def main():
     clock = pygame.time.Clock()
     matrix = __game_matrix.matrix
     drop_interval = 1.0
+    drop_to_bottom = False
     debug = False
 
     # draw one-time surfaces
     init_surfaces()
 
     # spawn first brick
-    __brick = spawn_brick()
-
-    # start brick-drop timer
-    drop_timer = RepeatedTimer(drop_interval, drop_timer_callback)
+    __brick = spawn_new_brick()
 
     # event loop
     while 1:
         error = False
         try:
-            # limit to 60 fps
-            clock.tick(60)
+            # limit to 30 fps
+            clock.tick(30)
 
-            # handle user events
-            for event in pygame.event.get():
-                if (event.type == pygame.QUIT) \
-                        or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
-                    drop_timer.stop()
-                    sys.exit()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                    __brick.move_left(matrix)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                    __brick.move_right(matrix)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                    __brick.move_down(matrix)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                    __brick.rotate(matrix)
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                    __brick = spawn_brick()
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-                    debug = not debug
+            # drop to bottom?
+            if drop_to_bottom:
+                hit = __brick.move_down(matrix)
+                # if not hit:
+                #     hit = __brick.move_down(matrix)
+                if hit:
+                    __game_matrix.add_brick(__brick)
+                    __brick = spawn_new_brick()
+                    drop_to_bottom = False
+                pygame.event.pump()
+
+            # no special event
+            else:
+                # handle user events
+                for event in pygame.event.get():
+                    if (event.type == pygame.QUIT) \
+                            or (event.type == pygame.KEYDOWN and event.key == pygame.K_q):
+                        sys.exit()
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                        __brick.move_left(matrix)
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                        __brick.move_right(matrix)
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                        __brick.move_down(matrix)
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                        __brick.rotate(matrix)
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                        drop_to_bottom = True
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                        __brick = spawn_new_brick()
+                    elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                        debug = not debug
+
+                # drop brick?
+                if __brick.is_drop_time(drop_interval):
+                    hit = __brick.drop_down(matrix)
+                    if hit:
+                        __game_matrix.add_brick(__brick)
+                        __brick = spawn_new_brick()
 
         # handle error
-        except Exception as exception:
+        except Exception as ex:
+            print(ex)
             error = True
 
         # draw frame and refresh
@@ -86,6 +105,7 @@ def draw_blank_grid():
     white = 150, 150, 150
     gray = 25, 25, 25
     grid = pygame.Surface((333, 663))
+    grid = grid.convert(grid)
     grid.fill((0, 0, 0))
 
     draw.line(grid, white, (0, 0), (332, 0))
@@ -114,25 +134,32 @@ def draw_matrix(debug):
     global __game_matrix
     global __brick
 
+    # blit blank matrix grid
     draw = pygame.draw
     matrix = pygame.Surface((333, 663))
     matrix.blit(__blank_grid_surface, (0, 0))
 
+    # draw filled matrix spaces (dead bricks)
     for x in range(1, __game_matrix.width - 1):
         for y in range(1, __game_matrix.height - 1):
             color = __game_matrix.color[x][y]
             if color != (0, 0, 0):
                 rect = ((x - 1) * 33) + 2, ((y - 1) * 33) + 2, 32, 32
                 draw.rect(matrix, color, rect)
-
-    for x in range(0, __brick.width):
-        for y in range(0, __brick.height):
-            if __brick.grid[x][y] == 1:
-                rect = (((__brick.x - 1) + x) * 33) + 2, (((__brick.y - 1) + y) * 33) + 2, 32, 32
-                draw.rect(matrix, __brick.color, rect)
-            elif debug:
-                rect = (((__brick.x - 1) + x) * 33) + 18, (((__brick.y - 1) + y) * 33) + 18, 1, 1
+            if debug and (__game_matrix.matrix[x][y] == 1):
+                rect = ((x - 1) * 33) + 17, ((y - 1) * 33) + 17, 2, 2
                 draw.rect(matrix, (255, 255, 255), rect)
+
+    # draw current live brick
+    if __brick is not None:
+        for x in range(0, __brick.width):
+            for y in range(0, __brick.height):
+                if __brick.grid[x][y] == 1:
+                    rect = (((__brick.x - 1) + x) * 33) + 2, (((__brick.y - 1) + y) * 33) + 2, 32, 32
+                    draw.rect(matrix, __brick.color, rect)
+                elif debug:
+                    rect = (((__brick.x - 1) + x) * 33) + 18, (((__brick.y - 1) + y) * 33) + 18, 1, 1
+                    draw.rect(matrix, (255, 255, 255), rect)
 
     # for x in range(0, 10):
     #     for y in range(0, 20):
@@ -162,18 +189,11 @@ def draw_frame(error, debug):
     return frame
 
 
-def spawn_brick():
+def spawn_new_brick():
     """ Spawns a new (random) brick. """
     shape_num = randint(1, 7)
     brick = Brick(shape_num)
     return brick
-
-
-def drop_timer_callback():
-    """ Called by drop timer, moves brick down """
-    global __game_matrix
-    global __brick
-    __brick.move_down(__game_matrix.matrix)
 
 
 # start main function
