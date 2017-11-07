@@ -2,7 +2,11 @@ from time import perf_counter
 
 
 class Brick:
+    """ Represents a live, moving brick that has not yet joined the static game matrix. """
+    """ It will do so once it's hit bottom and come to rest. """
+
     def __init__(self, shape_num):
+        """ Class constructor.  Creates one of seven basic shapes. """
         self.shape_num = shape_num
         if shape_num == 1:
             self.width = 4
@@ -117,23 +121,12 @@ class Brick:
             self.x -= 1
 
     def move_down(self, matrix):
+        self.last_drop_time = perf_counter()
         self.y += 1
         if self.collision(matrix):
             self.y -= 1
             return True
         return False
-        # for x in range(0, self.width):
-        #     bottom_brick_row = self.height - 1
-        #     matrix_x = x + self.x
-        #     next_matrix_row = bottom_brick_row + self.y + 1
-        #     if (self.grid[x][bottom_brick_row] == 1) \
-        #             and (matrix[matrix_x][next_matrix_row] == 1):
-        #         return True
-        # return False
-
-    def drop_down(self, matrix):
-        self.last_drop_time = perf_counter()
-        return self.move_down(matrix)
 
     def is_drop_time(self, interval):
         now = perf_counter()
