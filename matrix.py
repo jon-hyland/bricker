@@ -21,12 +21,17 @@ class Matrix:
             self.matrix[11][y] = 1
         self.stats = Stats()
         self.brick = None
+        self.next_brick = None
         self.spawn_brick()
 
     def spawn_brick(self):
         """ Spawns a new (random) brick. """
+        if self.next_brick is None:
+            shape_num = randint(1, 7)
+            self.next_brick = Brick(shape_num)
+        self.brick = self.next_brick
         shape_num = randint(1, 7)
-        self.brick = Brick(shape_num)
+        self.next_brick = Brick(shape_num)
 
     def add_brick_to_matrix(self):
         """ Moves resting brick to matrix. """

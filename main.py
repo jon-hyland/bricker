@@ -7,7 +7,7 @@ from draw import Draw
 def main():
     """ Main program entry point. """
 
-    # init engine and vars
+    # init
     pygame.init()
     screen_size = 1000, 700
     screen = pygame.display.set_mode(screen_size)
@@ -15,7 +15,6 @@ def main():
     draw = Draw(screen_size, screen, clock)
     matrix = Matrix(draw)
     drop_interval = 1.0
-    score = 0
 
     # event loop
     while 1:

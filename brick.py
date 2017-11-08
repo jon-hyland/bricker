@@ -1,4 +1,5 @@
 from time import perf_counter
+from color import Color
 
 
 class Brick:
@@ -16,7 +17,7 @@ class Brick:
             self.grid[1][2] = 1
             self.grid[2][2] = 1
             self.grid[3][2] = 1
-            self.color = 109, 245, 255
+            self.color = Color.SilverPink
         elif shape_num == 2:
             self.width = 3
             self.height = 3
@@ -25,7 +26,7 @@ class Brick:
             self.grid[0][2] = 1
             self.grid[1][2] = 1
             self.grid[2][2] = 1
-            self.color = 10, 67, 201
+            self.color = Color.TuftsBlue
         elif shape_num == 3:
             self.width = 3
             self.height = 3
@@ -34,7 +35,7 @@ class Brick:
             self.grid[0][2] = 1
             self.grid[1][2] = 1
             self.grid[2][2] = 1
-            self.color = 255, 157, 0
+            self.color = Color.ChromeYellow
         elif shape_num == 4:
             self.width = 2
             self.height = 2
@@ -43,7 +44,7 @@ class Brick:
             self.grid[0][1] = 1
             self.grid[1][0] = 1
             self.grid[1][1] = 1
-            self.color = 255, 233, 0
+            self.color = Color.Independence
         elif shape_num == 5:
             self.width = 3
             self.height = 3
@@ -52,7 +53,7 @@ class Brick:
             self.grid[2][0] = 1
             self.grid[0][1] = 1
             self.grid[1][1] = 1
-            self.color = 66, 201, 4
+            self.color = Color.ForestGreen
         elif shape_num == 6:
             self.width = 3
             self.height = 3
@@ -61,7 +62,7 @@ class Brick:
             self.grid[0][2] = 1
             self.grid[1][2] = 1
             self.grid[2][2] = 1
-            self.color = 129, 6, 206
+            self.color = Color.Byzantine
         elif shape_num == 7:
             self.width = 3
             self.height = 3
@@ -70,7 +71,7 @@ class Brick:
             self.grid[1][0] = 1
             self.grid[1][1] = 1
             self.grid[2][1] = 1
-            self.color = 229, 0, 0
+            self.color = Color.Coquelicot
         self.top_space = self.get_top_space()
         self.bottom_space = self.get_bottom_space()
         self.x = int((12 - self.width) / 2)
