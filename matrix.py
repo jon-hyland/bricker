@@ -1,3 +1,4 @@
+import time
 from random import randint
 from brick import Brick
 from stats import Stats
@@ -32,6 +33,8 @@ class Matrix:
         self.brick = self.next_brick
         shape_num = randint(1, 7)
         self.next_brick = Brick(shape_num)
+        collision = self.brick.collision(self.matrix)
+        return collision
 
     def add_brick_to_matrix(self):
         """ Moves resting brick to matrix. """
@@ -55,9 +58,12 @@ class Matrix:
 
     def move_brick_down(self):
         """ Moves brick to down. """
+        hit = False
         if self.brick is not None:
-            return self.brick.move_down(self.matrix)
-        return False
+            hit = self.brick.move_down(self.matrix)
+        if hit:
+            self.stats.current_score += 1
+        return hit
 
     def rotate_brick(self):
         """ Rotates brick. """
@@ -69,12 +75,22 @@ class Matrix:
         self.add_brick_to_matrix()
         rows_to_erase = self.identify_solid_rows()
         if len(rows_to_erase) > 0:
+            rows = len(rows_to_erase)
+            self.stats.lines += rows
+            points = 40
+            if rows == 2:
+                points = 100
+            elif rows == 3:
+                points = 300
+            elif rows == 4:
+                points = 1200
+            self.stats.current_score += points
             self.erase_filled_rows(rows_to_erase)
-            self.stats.score += len(rows_to_erase) ^ 2
             self.drop_grid()
             self.draw.event_pump()
             self.draw.draw_frame(self)
-        self.spawn_brick()
+        collision = self.spawn_brick()
+        return collision
 
     def identify_solid_rows(self):
         """ Checks matrix for solid rows, returns list of rows (to erase). """
@@ -104,7 +120,8 @@ class Matrix:
                     break
             self.draw.event_pump()
             self.draw.draw_frame(self)
-        return hit
+        self.stats.current_score += 2
+        return True
 
     def erase_filled_rows(self, rows_to_erase):
         """ Animates erasure of filled rows. """
@@ -133,10 +150,8 @@ class Matrix:
             if not empty:
                 top_filled_row = row
                 break
-
         if top_filled_row == 0:
             return False
-
         bottom_empty_row = 0
         for row in range(20, (top_filled_row - 1), -1):
             empty = True
@@ -147,10 +162,8 @@ class Matrix:
             if empty:
                 bottom_empty_row = row
                 break
-
         if bottom_empty_row == 0:
             return False
-
         for y in range(bottom_empty_row, 1, -1):
             for x in range(1, 11):
                 self.matrix[x][y] = self.matrix[x][y - 1]
@@ -158,5 +171,15 @@ class Matrix:
         for x in range(1, 11):
             self.matrix[x][1] = 0
             self.color[x][1] = 0, 0, 0
-
         return True
+
+    def game_over_clear(self):
+        """ Game over animation """
+        self.add_brick_to_matrix()
+        for y in range(21, 0, -1):
+            for x in range(1, 11):
+                self.matrix[x][y] = 0
+                self.color[x][y] = 0, 0, 0
+            self.draw.event_pump()
+            self.draw.draw_frame(self)
+

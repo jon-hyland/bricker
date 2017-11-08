@@ -15,9 +15,10 @@ def main():
     draw = Draw(screen_size, screen, clock)
     matrix = Matrix(draw)
     drop_interval = 1.0
+    game_over = False
 
     # event loop
-    while 1:
+    while not game_over:
         draw.error = False
         hit = False
         try:
@@ -61,7 +62,7 @@ def main():
 
             # brick hit bottom?
             if hit:
-                matrix.brick_hit()
+                game_over = matrix.brick_hit()
 
         # handle error
         except Exception as ex:
@@ -70,6 +71,9 @@ def main():
 
         # draw frame
         draw.draw_frame(matrix)
+
+    # game over
+    matrix.game_over_clear()
 
 
 # start main function
