@@ -1,7 +1,6 @@
-import time
 from random import randint
 from brick import Brick
-from stats import Stats
+from game_stats import GameStats
 
 
 class Matrix:
@@ -20,9 +19,28 @@ class Matrix:
         for y in range(0, 22):
             self.matrix[0][y] = 1
             self.matrix[11][y] = 1
-        self.stats = Stats()
+        self.stats = GameStats()
         self.brick = None
         self.next_brick = None
+        self.level_drop_intervals = []
+        interval = 2.0
+        for i in range(0, 10):
+            interval *= 0.8
+            self.level_drop_intervals.append(interval)
+
+    def new_game(self):
+        """ Reset entire game over. """
+        self.brick = None
+        self.next_brick = None
+        self.matrix = [[0 for x in range(self.height)] for y in range(self.width)]
+        self.color = [[(0, 0, 0) for x in range(self.height)] for y in range(self.width)]
+        for x in range(0, 12):
+            self.matrix[x][0] = 1
+            self.matrix[x][21] = 1
+        for y in range(0, 22):
+            self.matrix[0][y] = 1
+            self.matrix[11][y] = 1
+        self.stats = GameStats()
         self.spawn_brick()
 
     def spawn_brick(self):
@@ -76,7 +94,7 @@ class Matrix:
         rows_to_erase = self.identify_solid_rows()
         if len(rows_to_erase) > 0:
             rows = len(rows_to_erase)
-            self.stats.lines += rows
+            self.stats.add_lines(rows)
             points = 40
             if rows == 2:
                 points = 100
@@ -88,7 +106,7 @@ class Matrix:
             self.erase_filled_rows(rows_to_erase)
             self.drop_grid()
             self.draw.event_pump()
-            self.draw.draw_frame(self)
+            self.draw.update_frame(self)
         collision = self.spawn_brick()
         return collision
 
@@ -104,10 +122,11 @@ class Matrix:
                 rows_to_erase.append(y)
         return rows_to_erase
 
-    def is_drop_time(self, interval):
+    def is_drop_time(self):
         """ Returns true if it's time for brick to drop (by timer). """
         if self.brick is not None:
-            return self.brick.is_drop_time(interval)
+            drop_interval = self.level_drop_intervals[self.stats.level - 1]
+            return self.brick.is_drop_time(drop_interval)
         return False
 
     def drop_brick_to_bottom(self):
@@ -119,7 +138,7 @@ class Matrix:
                 if hit:
                     break
             self.draw.event_pump()
-            self.draw.draw_frame(self)
+            self.draw.update_frame(self)
         self.stats.current_score += 2
         return True
 
@@ -131,7 +150,7 @@ class Matrix:
                 self.color[x][y] = 0, 0, 0
             if (x % 2) == 0:
                 self.draw.event_pump()
-                self.draw.draw_frame(self)
+                self.draw.update_frame(self)
 
     def drop_grid(self):
         """ Drops hanging pieces to resting place. """
@@ -176,10 +195,11 @@ class Matrix:
     def game_over_clear(self):
         """ Game over animation """
         self.add_brick_to_matrix()
-        for y in range(21, 0, -1):
+        for y in range(20, 0, -1):
             for x in range(1, 11):
                 self.matrix[x][y] = 0
                 self.color[x][y] = 0, 0, 0
             self.draw.event_pump()
-            self.draw.draw_frame(self)
+            self.draw.update_frame(self)
+
 

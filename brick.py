@@ -107,7 +107,9 @@ class Brick:
     def collision(self, matrix):
         for x in range(0, self.width):
             for y in range(0, self.height):
-                if (self.grid[x][y] == 1) and (matrix[x + self.x][y + self.y] == 1):
+                matrix_x = x + self.x
+                matrix_y = y + self.y
+                if (self.grid[x][y] == 1) and (matrix[matrix_x][matrix_y] == 1):
                     return True
         return False
 

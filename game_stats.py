@@ -1,7 +1,8 @@
+import sys
 import os.path
 
 
-class Stats:
+class GameStats:
     """ Stores score and other game statistics. """
 
     def __init__(self):
@@ -9,7 +10,7 @@ class Stats:
         self.high_scores = self.load_high_scores()
         self.current_score = 0
         self.lines = 0
-        # self.save_high_scores(self.high_scores)
+        self.level = 1
 
     def load_high_scores(self):
         """ Load high scores from file. """
@@ -34,6 +35,22 @@ class Stats:
             for x in scores:
                 text_file.write(x.initials + "\t" + str(x.score) + "\n")
 
+    def is_high_score(self):
+        """ Returns true if score can be placed on board. """
+        if len(self.high_scores) < 10:
+            return True
+        lowest = sys.maxsize
+        for score in self.high_scores:
+            if score.score < lowest:
+                lowest = score.score
+        return self.current_score > lowest
+
+    def add_high_score(self, initials):
+        """ Adds new score, sorts and limits to top 10, saves to disk. """
+        self.high_scores.append(HighScore(initials, self.current_score))
+        self.high_scores = self.sort_scores(self.high_scores)
+        self.save_high_scores(self.high_scores)
+
     @staticmethod
     def sort_scores(scores):
         """ Sorts scores, limits to top 10. """
@@ -41,6 +58,11 @@ class Stats:
         while len(scores) > 10:
             del(scores[-1])
         return scores
+
+    def add_lines(self, count):
+        """ Increments cleared lines, sets level. """
+        self.lines += count
+        self.level = (self.lines // 20) + 1
 
 
 class HighScore:

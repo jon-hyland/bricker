@@ -25,3 +25,12 @@ X - Basic scoring
 - High score saving / display
 
 
+
+- Event loop 1
+    - Menu controls
+    - Draw Menu
+        - Resume
+        - Restart
+        - Quit
+
+
