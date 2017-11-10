@@ -19,20 +19,26 @@ class Draw:
         self.debug = False
 
     @staticmethod
+    def create_surface(size):
+        surface = pygame.Surface(size, pygame.SRCALPHA, 32)
+        surface = surface.convert_alpha(surface)
+        return surface
+
+    @staticmethod
     def event_pump():
         """ Pumps the event queue, allowing frames to be rendered outside primary event loop. """
         pygame.event.pump()
 
-    def update_frame(self, matrix):
+    def update_frame(self, matrix, spaces):
         """ Draws and flips the entire screen frame. """
         # draw frame
-        frame = self.draw_frame(matrix)
+        frame = self.draw_frame(matrix, spaces)
 
         # blit & flip screen
         self.screen.blit(frame, (0, 0))
         pygame.display.flip()
 
-    def draw_frame(self, matrix):
+    def draw_frame(self, matrix, spaces):
         """ Draws the primary game screen surface. """
         # vars
         side_width = (self.screen_size[0] - 333) // 2
@@ -48,7 +54,19 @@ class Draw:
 
         # game matrix
         matrix_surface = self.draw_matrix(matrix)
-        frame.blit(matrix_surface, (side_width, int((self.screen_size[1] - 663) / 2)))
+        frame.blit(matrix_surface, (side_width, (self.screen_size[1] - 663) // 2))
+
+        # spaces
+        if spaces is not None:
+            for space in spaces:
+                x = int(space.x)
+                y = int(space.y)
+                rect = x, y, 34, 34
+                pygame.draw.rect(frame, space.color, rect)
+                pygame.draw.line(frame, Color.Black, (x, y), (x + 34, y))
+                pygame.draw.line(frame, Color.Black, (x, y + 34), (x + 34, y + 34))
+                pygame.draw.line(frame, Color.Black, (x, y), (x, y + 34))
+                pygame.draw.line(frame, Color.Black, (x + 34, y), (x + 34, y + 34))
 
         # title
         title_surface = self.draw_title()
@@ -116,8 +134,8 @@ class Draw:
         """ Draws the title surface. """
         title_surface = self.font_title.render("bricker", True, Color.White)
         version_surface = self.font_small.render("www.intsol.tech", True, Color.White)
-        surface = pygame.Surface((title_surface.get_width(),
-                                 (title_surface.get_height() + version_surface.get_height())))
+        surface = self.create_surface((title_surface.get_width(),
+                                      (title_surface.get_height() + version_surface.get_height())))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
@@ -143,7 +161,7 @@ class Draw:
         right_5 = self.font_small.render("space", True, Color.White)
         right_6 = self.font_small.render("esc", True, Color.White)
         line_height = left_1.get_height()
-        surface = pygame.Surface((width, title_surface.get_height() + (line_height * 6) + space))
+        surface = self.create_surface((width, title_surface.get_height() + (line_height * 6) + space))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
@@ -165,14 +183,13 @@ class Draw:
         """ Draw next brick surface. """
         width = 240
         title_surface = self.font_med.render("next", True, Color.White)
-        surface = pygame.Surface((width, 135 + title_surface.get_height()))
+        surface = self.create_surface((width, 135 + title_surface.get_height()))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         if matrix.next_brick is not None:
             next_brick = matrix.next_brick
             size = (next_brick.width * 32) + (next_brick.width - 1)
-            brick_surface = pygame.Surface((size, size), pygame.SRCALPHA, 32)
-            brick_surface = brick_surface.convert_alpha(brick_surface)
+            brick_surface = self.create_surface((size, size))
             for x in range(0, next_brick.width):
                 for y in range(0, next_brick.height):
                     if next_brick.grid[x][y] == 1:
@@ -189,7 +206,7 @@ class Draw:
         space = 4
         title_surface = self.font_med.render("level", True, Color.White)
         level_surface = self.font_large.render("{:,}".format(stats.level), True, Color.White)
-        surface = pygame.Surface((width, title_surface.get_height() + space + level_surface.get_height()))
+        surface = self.create_surface((width, title_surface.get_height() + space + level_surface.get_height()))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
@@ -203,7 +220,7 @@ class Draw:
         space = 4
         title_surface = self.font_med.render("lines", True, Color.White)
         lines_surface = self.font_large.render("{:,}".format(stats.lines), True, Color.White)
-        surface = pygame.Surface((width, title_surface.get_height() + space + lines_surface.get_height()))
+        surface = self.create_surface((width, title_surface.get_height() + space + lines_surface.get_height()))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
@@ -217,7 +234,7 @@ class Draw:
         space = 4
         title_surface = self.font_med.render("score", True, Color.White)
         score_surface = self.font_large.render("{:,}".format(stats.current_score), True, Color.White)
-        surface = pygame.Surface((width, title_surface.get_height() + space + score_surface.get_height()))
+        surface = self.create_surface((width, title_surface.get_height() + space + score_surface.get_height()))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
@@ -232,7 +249,7 @@ class Draw:
         title_surface = self.font_med.render("high scores", True, Color.White)
         line_height = self.font_small.get_height()
         height = title_surface.get_height() + space + (line_height * 10)
-        surface = pygame.Surface((width, height))
+        surface = self.create_surface((width, height))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
@@ -247,7 +264,7 @@ class Draw:
 
     def draw_matrix(self, matrix):
         """ Draws the game matrix, once per frame. """
-        matrix_surface = pygame.Surface((333, 663))
+        matrix_surface = self.create_surface((333, 663))
         matrix_surface.blit(self.blank_grid_surface, (0, 0))
 
         for x in range(1, matrix.width - 1):
@@ -293,7 +310,8 @@ class Draw:
         new_surface = self.font_large.render("new game", True, new_color)
         quit_surface = self.font_large.render("quit", True, quit_color)
 
-        surface = pygame.Surface((width, (resume_surface.get_height() * 3) + (spacing * 4) + 4))
+        surface = self.create_surface((width, (resume_surface.get_height() * 3) + (spacing * 4) + 4))
+        surface.fill(Color.Black)
         pygame.draw.line(surface, Color.White, (0, 0), (surface.get_width() - 1, 0), 1)
         pygame.draw.line(surface, Color.White, (0, 1), (surface.get_width() - 1, 1), 1)
         pygame.draw.line(surface, Color.White, (0, surface.get_height() - 2),
@@ -312,7 +330,7 @@ class Draw:
         surface.blit(quit_surface, ((surface.get_width() - quit_surface.get_width()) // 2,
                                     (spacing * 3) + (quit_surface.get_height() * 2) + 2))
 
-        frame = self.draw_frame(matrix)
+        frame = self.draw_frame(matrix, None)
         frame.blit(surface, ((frame.get_width() - surface.get_width()) // 2,
                              (frame.get_height() - surface.get_height()) // 2))
 
@@ -334,20 +352,20 @@ class Draw:
         char2 = self.font_title.render(chars[1], True, Color.FluorescentOrange)
         char3 = self.font_title.render(chars[2], True, Color.FluorescentOrange)
 
-        slot1 = pygame.Surface((char_width, char_height))
-        slot2 = pygame.Surface((char_width, char_height))
-        slot3 = pygame.Surface((char_width, char_height))
+        slot1 = self.create_surface((char_width, char_height))
+        slot2 = self.create_surface((char_width, char_height))
+        slot3 = self.create_surface((char_width, char_height))
         slot1.blit(char1, (((char_width - char1.get_width()) // 2), ((char_height - char1.get_height()) // 2)))
         slot2.blit(char2, (((char_width - char2.get_width()) // 2), ((char_height - char2.get_height()) // 2)))
         slot3.blit(char3, (((char_width - char3.get_width()) // 2), ((char_height - char3.get_height()) // 2)))
 
-        initials = pygame.Surface((char_width * 3, char_height))
-        initials.fill(Color.PortlandOrange)
+        initials = self.create_surface((char_width * 3, char_height))
         initials.blit(slot1, (0, 0))
         initials.blit(slot2, (char_width, 0))
         initials.blit(slot3, (char_width * 2, 0))
 
-        surface = pygame.Surface((width, (spacing * 3) + line1.get_height() + line2.get_height() + char_height + 4))
+        surface = self.create_surface((width, (spacing * 3) + line1.get_height() + line2.get_height() + char_height + 4))
+        surface.fill(Color.Black)
         pygame.draw.line(surface, Color.White, (0, 0), (surface.get_width() - 1, 0), 1)
         pygame.draw.line(surface, Color.White, (0, 1), (surface.get_width() - 1, 1), 1)
         pygame.draw.line(surface, Color.White, (0, surface.get_height() - 2),
@@ -365,17 +383,10 @@ class Draw:
         surface.blit(line2, ((surface.get_width() - line2.get_width()) // 2, spacing + line1.get_height() + 2))
         surface.blit(initials, ((surface.get_width() - initials.get_width()) // 2, (spacing * 2) + line1.get_height() + line2.get_height() + 2))
 
-        frame = self.draw_frame(matrix)
+        frame = self.draw_frame(matrix, None)
         frame.blit(surface, ((frame.get_width() - surface.get_width()) // 2,
                              (frame.get_height() - surface.get_height()) // 2))
 
         self.event_pump()
         self.screen.blit(frame, (0, 0))
         pygame.display.flip()
-
-
-
-
-
-
-

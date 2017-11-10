@@ -1,7 +1,7 @@
 import pygame
-import sys
 from matrix import Matrix
 from draw import Draw
+from explode import Explode
 
 
 def main():
@@ -100,14 +100,12 @@ def high_score_loop(clock, draw, matrix):
                         pos += 1
                         if pos > 3:
                             pos = 3
-                    print("".join(chars))
                 elif event.key == pygame.K_BACKSPACE:
                     pos -= 1
                     if pos < 0:
                         pos = 0
                     if pos <= 2:
                         chars[pos] = " "
-                    print("".join(chars))
                 elif event.key == pygame.K_RETURN:
                     if len("".join(chars).strip()) == 3:
                         done = True
@@ -190,10 +188,12 @@ def game_loop(clock, draw, matrix):
             draw.error = True
 
         # draw frame
-        draw.update_frame(matrix)
+        draw.update_frame(matrix, None)
 
     # game over
-    matrix.game_over_clear()
+    matrix.add_brick_to_matrix()
+    explode = Explode(clock, draw)
+    explode.explode_spaces(matrix)
     if matrix.stats.is_high_score():
         high_score_loop(clock, draw, matrix)
     return False

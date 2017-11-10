@@ -106,7 +106,7 @@ class Matrix:
             self.erase_filled_rows(rows_to_erase)
             self.drop_grid()
             self.draw.event_pump()
-            self.draw.update_frame(self)
+            self.draw.update_frame(self, None)
         collision = self.spawn_brick()
         return collision
 
@@ -133,12 +133,13 @@ class Matrix:
         """ Animates a brick dropping to bottom of screen, one motion """
         hit = False
         while not hit:
+            self.draw.clock.tick(30)
             for i in range(0, 3):
                 hit = self.move_brick_down()
                 if hit:
                     break
             self.draw.event_pump()
-            self.draw.update_frame(self)
+            self.draw.update_frame(self, None)
         self.stats.current_score += 2
         return True
 
@@ -150,7 +151,7 @@ class Matrix:
                 self.color[x][y] = 0, 0, 0
             if (x % 2) == 0:
                 self.draw.event_pump()
-                self.draw.update_frame(self)
+                self.draw.update_frame(self, None)
 
     def drop_grid(self):
         """ Drops hanging pieces to resting place. """
@@ -192,14 +193,5 @@ class Matrix:
             self.color[x][1] = 0, 0, 0
         return True
 
-    def game_over_clear(self):
-        """ Game over animation """
-        self.add_brick_to_matrix()
-        for y in range(20, 0, -1):
-            for x in range(1, 11):
-                self.matrix[x][y] = 0
-                self.color[x][y] = 0, 0, 0
-            self.draw.event_pump()
-            self.draw.update_frame(self)
 
 
