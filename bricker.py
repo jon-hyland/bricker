@@ -128,66 +128,61 @@ def game_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix):
     while not game_over:
         renderer.error = False
         hit = False
-        try:
-            # limit fps
-            clock.tick(60)
 
-            # handle user events
-            for event in pygame.event.get():
-                # left
-                if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                    matrix.move_brick_left()
+        # limit fps
+        clock.tick(60)
 
-                # right
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                    matrix.move_brick_right()
+        # handle user events
+        for event in pygame.event.get():
+            # left
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
+                matrix.move_brick_left()
 
-                # down
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
-                    matrix.move_brick_down()
+            # right
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
+                matrix.move_brick_right()
 
-                # rotate
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                    matrix.rotate_brick()
+            # down
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
+                matrix.move_brick_down()
 
-                # drop
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                    hit = matrix.drop_brick_to_bottom()
+            # rotate
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                matrix.rotate_brick()
 
-                # menu
-                elif event.type == pygame.KEYDOWN and (event.key == pygame.K_ESCAPE or event.key == pygame.K_q):
-                    return True
+            # drop
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                hit = matrix.drop_brick_to_bottom()
 
-                # level up
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEUP:
-                    if renderer.debug:
-                        matrix.stats.level += 1
-                        if matrix.stats.level > 10:
-                            matrix.stats.level = 10
+            # menu
+            elif event.type == pygame.KEYDOWN and (event.key == pygame.K_ESCAPE or event.key == pygame.K_q):
+                return True
 
-                # level down
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEDOWN:
-                    if renderer.debug:
-                        matrix.stats.level -= 1
-                        if matrix.stats.level < 1:
-                            matrix.stats.level = 1
+            # level up
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEUP:
+                if renderer.debug:
+                    matrix.stats.level += 1
+                    if matrix.stats.level > 10:
+                        matrix.stats.level = 10
 
-                # debug toggle
-                elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-                    renderer.debug = not renderer.debug
+            # level down
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEDOWN:
+                if renderer.debug:
+                    matrix.stats.level -= 1
+                    if matrix.stats.level < 1:
+                        matrix.stats.level = 1
 
-            # drop brick timer?
-            if matrix.is_drop_time():    # add drop interval
-                hit = matrix.move_brick_down()
+            # debug toggle
+            elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
+                renderer.debug = not renderer.debug
 
-            # brick hit bottom?
-            if hit:
-                game_over = matrix.brick_hit()
+        # drop brick timer?
+        if matrix.is_drop_time():    # add drop interval
+            hit = matrix.move_brick_down()
 
-        # handle error
-        except Exception as ex:
-            print(str(ex))
-            renderer.error = True
+        # brick hit bottom?
+        if hit:
+            game_over = matrix.brick_hit()
 
         # draw frame
         renderer.update_frame(matrix, None)

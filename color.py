@@ -1,4 +1,7 @@
+# pylint: disable=too-few-public-methods
+
 class Color:
+    """Contains some static RGB color definitions."""
     Black = 0, 0, 0
     ErrorBlack = 50, 0, 0
     White = 240, 240, 240
@@ -16,8 +19,3 @@ class Color:
     ForestGreen = 54, 137, 38
     TuftsBlue = 74, 125, 219
     TestBack = 25, 0, 0
-
-
-
-
-

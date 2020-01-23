@@ -1,3 +1,4 @@
+from typing import List
 from time import perf_counter
 from color import Color
 
@@ -10,81 +11,121 @@ class Brick:
         """Class constructor.  Creates one of seven basic shapes."""
         self.__shape_num: int = shape_num
         if shape_num == 1:
-            self.width = 4
-            self.height = 4
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[0][2] = 1
-            self.grid[1][2] = 1
-            self.grid[2][2] = 1
-            self.grid[3][2] = 1
-            self.color = Color.SilverPink
+            self.__width: int = 4
+            self.__height: int = 4
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[0][2] = 1
+            self.__grid[1][2] = 1
+            self.__grid[2][2] = 1
+            self.__grid[3][2] = 1
+            self.__color = Color.SilverPink
         elif shape_num == 2:
-            self.width = 3
-            self.height = 3
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[0][1] = 1
-            self.grid[0][2] = 1
-            self.grid[1][2] = 1
-            self.grid[2][2] = 1
-            self.color = Color.TuftsBlue
+            self.__width: int = 3
+            self.__height: int = 3
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[0][1] = 1
+            self.__grid[0][2] = 1
+            self.__grid[1][2] = 1
+            self.__grid[2][2] = 1
+            self.__color = Color.TuftsBlue
         elif shape_num == 3:
-            self.width = 3
-            self.height = 3
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[2][1] = 1
-            self.grid[0][2] = 1
-            self.grid[1][2] = 1
-            self.grid[2][2] = 1
-            self.color = Color.ChromeYellow
+            self.__width: int = 3
+            self.__height: int = 3
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[2][1] = 1
+            self.__grid[0][2] = 1
+            self.__grid[1][2] = 1
+            self.__grid[2][2] = 1
+            self.__color = Color.ChromeYellow
         elif shape_num == 4:
-            self.width = 2
-            self.height = 2
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[0][0] = 1
-            self.grid[0][1] = 1
-            self.grid[1][0] = 1
-            self.grid[1][1] = 1
-            self.color = Color.Independence
+            self.__width: int = 2
+            self.__height: int = 2
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[0][0] = 1
+            self.__grid[0][1] = 1
+            self.__grid[1][0] = 1
+            self.__grid[1][1] = 1
+            self.__color = Color.Independence
         elif shape_num == 5:
-            self.width = 3
-            self.height = 3
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[1][0] = 1
-            self.grid[2][0] = 1
-            self.grid[0][1] = 1
-            self.grid[1][1] = 1
-            self.color = Color.ForestGreen
+            self.__width: int = 3
+            self.__height: int = 3
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[1][0] = 1
+            self.__grid[2][0] = 1
+            self.__grid[0][1] = 1
+            self.__grid[1][1] = 1
+            self.__color = Color.ForestGreen
         elif shape_num == 6:
-            self.width = 3
-            self.height = 3
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[1][1] = 1
-            self.grid[0][2] = 1
-            self.grid[1][2] = 1
-            self.grid[2][2] = 1
-            self.color = Color.Byzantine
+            self.__width: int = 3
+            self.__height: int = 3
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[1][1] = 1
+            self.__grid[0][2] = 1
+            self.__grid[1][2] = 1
+            self.__grid[2][2] = 1
+            self.__color = Color.Byzantine
         elif shape_num == 7:
-            self.width = 3
-            self.height = 3
-            self.grid = [[0 for x in range(self.height)] for y in range(self.width)]
-            self.grid[0][0] = 1
-            self.grid[1][0] = 1
-            self.grid[1][1] = 1
-            self.grid[2][1] = 1
-            self.color = Color.Coquelicot
-        self.top_space = self.get_top_space()
-        self.bottom_space = self.get_bottom_space()
-        self.x = int((12 - self.width) / 2)
-        self.y = 1 - self.top_space
-        self.last_drop_time = perf_counter()
+            self.__width: int = 3
+            self.__height: int = 3
+            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__grid[0][0] = 1
+            self.__grid[1][0] = 1
+            self.__grid[1][1] = 1
+            self.__grid[2][1] = 1
+            self.__color = Color.Coquelicot
+        self.__top_space: int = self.__get_top_space()
+        self.__bottom_space: int = self.__get_bottom_space()
+        self.__x: int = int((12 - self.__width) / 2)
+        self.__y: int = 1 - self.__top_space
+        self.__last_drop_time: float = perf_counter()
 
-    def get_top_space(self):
-        """Returns space above brick."""
+    @property
+    def width(self) -> int:
+        """Returns brick width."""
+        return self.__width
+
+    @property
+    def height(self) -> int:
+        """Returns brick height."""
+        return self.__height
+
+    @property
+    def grid(self) -> List[List[int]]:
+        """Returns brick grid."""
+        return self.__grid
+
+    @property
+    def color(self) -> Color:
+        """Returns brick color."""
+        return self.__color
+
+    @property
+    def top_space(self) -> int:
+        """Returns non-solid spaces at top of brick grid."""
+        return self.__top_space
+
+    @property
+    def bottom_space(self) -> int:
+        """Returns non-solid spaces at bottom of brick grid."""
+        return self.__bottom_space
+
+    @property
+    def x(self) -> int:
+        """Returns X position of brick."""
+        return self.__x
+
+    @property
+    def y(self) -> int:
+        """Returns Y position of brick."""
+        return self.__y
+
+    def __get_top_space(self) -> int:
+        """Calculates non-solid spaces at top of brick grid."""
         top_space = 0
-        for y in range(0, self.height):
+        for y in range(0, self.__height):
             empty = True
-            for x in range(0, self.width):
-                if self.grid[x][y] == 1:
+            for x in range(0, self.__width):
+                if self.__grid[x][y] == 1:
                     empty = False
             if empty:
                 top_space += 1
@@ -92,13 +133,13 @@ class Brick:
                 break
         return top_space
 
-    def get_bottom_space(self):
-        """Returns space below brick."""
+    def __get_bottom_space(self) -> int:
+        """Calculates non-solid spaces at bottom of brick grid."""
         bottom_space = 0
-        for y in reversed(range(0, self.height)):
+        for y in reversed(range(0, self.__height)):
             empty = True
-            for x in range(0, self.width):
-                if self.grid[x][y] == 1:
+            for x in range(0, self.__width):
+                if self.__grid[x][y] == 1:
                     empty = False
             if empty:
                 bottom_space += 1
@@ -108,81 +149,81 @@ class Brick:
 
     def collision(self, matrix):
         """Returns true on brick collision."""
-        for x in range(0, self.width):
-            for y in range(0, self.height):
-                matrix_x = x + self.x
-                matrix_y = y + self.y
-                if (self.grid[x][y] == 1) and (matrix[matrix_x][matrix_y] == 1):
+        for x in range(0, self.__width):
+            for y in range(0, self.__height):
+                matrix_x = x + self.__x
+                matrix_y = y + self.__y
+                if (self.__grid[x][y] == 1) and (matrix[matrix_x][matrix_y] == 1):
                     return True
         return False
 
     def move_left(self, matrix):
         """Moves brick left, prevents collision."""
-        self.x -= 1
+        self.__x -= 1
         if self.collision(matrix):
-            self.x += 1
+            self.__x += 1
 
     def move_right(self, matrix):
         """Moves brick right, prevents collision."""
-        self.x += 1
+        self.__x += 1
         if self.collision(matrix):
-            self.x -= 1
+            self.__x -= 1
 
     def move_down(self, matrix):
         """Moves brick down, prevents collision."""
-        self.last_drop_time = perf_counter()
-        self.y += 1
+        self.__last_drop_time = perf_counter()
+        self.__y += 1
         if self.collision(matrix):
-            self.y -= 1
+            self.__y -= 1
             return True
         return False
 
     def is_drop_time(self, interval):
         """Returns true if its time to drop brick (gravity)."""
         now = perf_counter()
-        elapsed = now - self.last_drop_time
+        elapsed = now - self.__last_drop_time
         drop_time = elapsed >= interval
         return drop_time
 
     def rotate(self, matrix):
         """Rotates brick."""
 
-        new_grid = [[0 for x in range(self.width)] for y in range(self.height)]
-        for x1 in range(0, self.width):
-            for y1 in range(0, self.height):
-                x2 = -y1 + (self.height - 1)
+        new_grid = [[0 for x in range(self.__width)] for y in range(self.__height)]
+        for x1 in range(0, self.__width):
+            for y1 in range(0, self.__height):
+                x2 = -y1 + (self.__height - 1)
                 y2 = x1
-                new_grid[x2][y2] = self.grid[x1][y1]
-        self.grid = new_grid
+                new_grid[x2][y2] = self.__grid[x1][y1]
+        self.__grid = new_grid
 
         steps = 0
         while self.collision(matrix):
-            self.y += 1
+            self.__y += 1
             steps += 1
             if steps >= 3:
-                self.y -= 3
+                self.__y -= 3
                 break
 
         steps = 0
         while self.collision(matrix):
-            self.y -= 1
+            self.__y -= 1
             steps += 1
             if steps >= 3:
-                self.y += 3
+                self.__y += 3
                 break
 
         steps = 0
         while self.collision(matrix):
-            self.x -= 1
+            self.__x -= 1
             steps += 1
             if steps >= 3:
-                self.x += 3
+                self.__x += 3
                 break
 
         steps = 0
         while self.collision(matrix):
-            self.x += 1
+            self.__x += 1
             steps += 1
             if steps >= 3:
-                self.x -= 3
+                self.__x -= 3
                 break
