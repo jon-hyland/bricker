@@ -1,22 +1,43 @@
+from typing import List
 import sys
 import os.path
 
 
 class GameStats:
-    """ Stores score and other game statistics. """
+    """Stores current score, high scores, and other game statistics."""
 
-    def __init__(self):
-        """ Class constructor. """
-        self.high_scores = self.load_high_scores()
-        self.current_score = 0
-        self.lines = 0
-        self.level = 1
+    def __init__(self) -> None:
+        """Class constructor."""
+        self.__high_scores: List[HighScore] = self.__load_high_scores()
+        self.__current_score: int = 0
+        self.__lines: int = 0
+        self.__level: int = 1
 
-    def load_high_scores(self):
-        """ Load high scores from file. """
+    @property
+    def high_scores(self) -> List['HighScore']:
+        """Returns list of high scores."""
+        return self.__high_scores
+
+    @property
+    def current_score(self) -> int:
+        """Returns the current score."""
+        return self.__current_score
+
+    @property
+    def lines(self) -> int:
+        """Returns the number of lines cleares."""
+        return self.__lines
+
+    @property
+    def level(self) -> int:
+        """Returns the current level."""
+        return self.__level
+
+    def __load_high_scores(self) -> List['HighScore']:
+        """Load high scores from file."""
         scores = []
         if os.path.isfile("high_scores.txt"):
-            with open("high_scores.txt") as f:
+            with open("high_scores.txt", "r") as f:
                 lines = f.readlines()
             lines = [x.strip() for x in lines]
             for line in lines:
@@ -25,51 +46,64 @@ class GameStats:
                     initials = split[0]
                     score = int(split[1])
                     scores.append(HighScore(initials, score))
-            scores = self.sort_scores(scores)
+            scores = self.__sort_scores(scores)
         return scores
 
-    def save_high_scores(self, scores):
-        """ Save high scores to file. """
-        scores = self.sort_scores(scores)
+    def __save_high_scores(self, scores: List['HighScore']):
+        """Save high scores to file."""
+        scores = self.__sort_scores(scores)
         with open("high_scores.txt", "w") as text_file:
             for x in scores:
                 text_file.write(x.initials + "\t" + str(x.score) + "\n")
 
-    def is_high_score(self):
-        """ Returns true if score can be placed on board. """
-        if len(self.high_scores) < 10:
+    def is_high_score(self) -> bool:
+        """Returns true if score can be placed on board."""
+        if len(self.__high_scores) < 10:
             return True
         lowest = sys.maxsize
-        for score in self.high_scores:
+        for score in self.__high_scores:
             if score.score < lowest:
                 lowest = score.score
-        return self.current_score > lowest
+        return self.__current_score > lowest
 
-    def add_high_score(self, initials):
-        """ Adds new score, sorts and limits to top 10, saves to disk. """
-        self.high_scores.append(HighScore(initials, self.current_score))
-        self.high_scores = self.sort_scores(self.high_scores)
-        self.save_high_scores(self.high_scores)
+    def add_high_score(self, initials: str) -> None:
+        """Adds new score, sorts and limits to top 10, saves to disk."""
+        self.__high_scores.append(HighScore(initials, self.__current_score))
+        self.__high_scores = self.__sort_scores(self.__high_scores)
+        self.__save_high_scores(self.__high_scores)
 
     @staticmethod
-    def sort_scores(scores):
-        """ Sorts scores, limits to top 10. """
+    def __sort_scores(scores: List['HighScore']) -> List['HighScore']:
+        """Sorts scores and returns new list.  Truncates to top ten."""
         scores.sort(key=lambda x: x.score, reverse=True)
         while len(scores) > 10:
-            del(scores[-1])
+            del scores[-1]
         return scores
 
-    def add_lines(self, count):
-        """ Increments cleared lines, sets level. """
-        self.lines += count
-        self.level = (self.lines // 20) + 1
+    def add_lines(self, count: int) -> None:
+        """Increments cleared lines, sets level."""
+        self.__lines += count
+        self.__level = (self.__lines // 20) + 1
+
+    def increment_score(self, value: int) -> None:
+        """Increments current score by specified value."""
+        self.__current_score += value
 
 
 class HighScore:
-    """ Stores a single high score. """
+    """Stores a single high score."""
 
-    def __init__(self, initials, score):
-        self.initials = initials
-        self.score = score
+    def __init__(self, initials: str, score: int) -> None:
+        """Class constructor."""
+        self.__initials: str = initials
+        self.__score: int = score
 
+    @property
+    def initials(self) -> str:
+        """Returns gamer's initials."""
+        return self.__initials
 
+    @property
+    def score(self) -> int:
+        """Returns high-score value."""
+        return self.__score

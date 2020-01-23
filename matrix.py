@@ -6,10 +6,10 @@ from renderer import Renderer
 
 
 class Matrix:
-    """ Stores the 10x20 game matrix.  Contains game logic. """
+    """Stores the 10x20 game matrix.  Contains matrix-related game logic."""
 
     def __init__(self, renderer: Renderer) -> None:
-        """ Class constructor. """
+        """Class constructor."""
         self.__renderer: Renderer = renderer
         self.__width: int = 12     # 10 visible slots, plus border for collision detection
         self.__height: int = 22    # 20 visible slots, plus border for collision detection
@@ -46,7 +46,7 @@ class Matrix:
         return self.__matrix
 
     def new_game(self):
-        """ Reset entire game over. """
+        """Reset entire game over."""
         self.brick = None
         self.next_brick = None
         self.__matrix = [[0 for x in range(self.__height)] for y in range(self.__width)]
@@ -61,7 +61,7 @@ class Matrix:
         self.spawn_brick()
 
     def spawn_brick(self):
-        """ Spawns a new (random) brick. """
+        """Spawns a new (random) brick."""
         if self.next_brick is None:
             shape_num = randint(1, 7)
             self.next_brick = Brick(shape_num)
@@ -72,7 +72,7 @@ class Matrix:
         return collision
 
     def add_brick_to_matrix(self):
-        """ Moves resting brick to matrix. """
+        """Moves resting brick to matrix."""
         if self.brick is not None:
             for x in range(0, self.brick.width):
                 for y in range(0, self.brick.height):
@@ -82,7 +82,7 @@ class Matrix:
         self.brick = None
 
     def move_brick_left(self):
-        """ Moves brick to the left. """
+        """Moves brick to the left."""
         if self.brick is not None:
             self.brick.move_left(self.__matrix)
 
@@ -92,21 +92,21 @@ class Matrix:
             self.brick.move_right(self.__matrix)
 
     def move_brick_down(self):
-        """ Moves brick to down. """
+        """Moves brick to down."""
         hit = False
         if self.brick is not None:
             hit = self.brick.move_down(self.__matrix)
         if hit:
-            self.stats.current_score += 1
+            self.stats.increment_score(1)
         return hit
 
     def rotate_brick(self):
-        """ Rotates brick. """
+        """Rotates brick."""
         if self.brick is not None:
             self.brick.rotate(self.__matrix)
 
     def brick_hit(self):
-        """ Executed when brick hits bottom and comes to rest. """
+        """Executed when brick hits bottom and comes to rest."""
         self.add_brick_to_matrix()
         rows_to_erase = self.identify_solid_rows()
         if len(rows_to_erase) > 0:
@@ -119,7 +119,7 @@ class Matrix:
                 points = 300
             elif rows == 4:
                 points = 1200
-            self.stats.current_score += points
+            self.stats.increment_score(points)
             self.erase_filled_rows(rows_to_erase)
             self.drop_grid()
             self.__renderer.event_pump()
@@ -128,7 +128,7 @@ class Matrix:
         return collision
 
     def identify_solid_rows(self):
-        """ Checks matrix for solid rows, returns list of rows (to erase). """
+        """Checks matrix for solid rows, returns list of rows (to erase)."""
         rows_to_erase = []
         for y in range(1, 21):
             solid = True
@@ -140,14 +140,14 @@ class Matrix:
         return rows_to_erase
 
     def is_drop_time(self):
-        """ Returns true if it's time for brick to drop (by timer). """
+        """Returns true if it's time for brick to drop (by timer)."""
         if self.brick is not None:
             drop_interval = self.level_drop_intervals[self.stats.level - 1]
             return self.brick.is_drop_time(drop_interval)
         return False
 
     def drop_brick_to_bottom(self):
-        """ Animates a brick dropping to bottom of screen, one motion """
+        """Animates a brick dropping to bottom of screen."""
         hit = False
         while not hit:
             self.__renderer.clock.tick(30)
@@ -157,11 +157,11 @@ class Matrix:
                     break
             self.__renderer.event_pump()
             self.__renderer.update_frame(self, None)
-        self.stats.current_score += 2
+        self.stats.increment_score(2)
         return True
 
     def erase_filled_rows(self, rows_to_erase):
-        """ Animates erasure of filled rows. """
+        """Animates erasure of filled rows."""
         for x in range(1, 11):
             for y in rows_to_erase:
                 self.__matrix[x][y] = 0
@@ -171,12 +171,12 @@ class Matrix:
                 self.__renderer.update_frame(self, None)
 
     def drop_grid(self):
-        """ Drops hanging pieces to resting place. """
+        """Drops hanging pieces to resting place."""
         while self.drop_grid_once():
             pass
 
     def drop_grid_once(self):
-        """ Drops hanging pieces, bottom-most row. """
+        """Drops hanging pieces, bottom-most row."""
         top_filled_row = 0
         for row in range(1, 21):
             empty = True

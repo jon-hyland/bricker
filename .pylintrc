@@ -21,7 +21,8 @@ good-names=
     x1,
     x2,
     y1,
-    y2
+    y2,
+    f
 
 max-line-length=160
 

@@ -225,8 +225,7 @@ class Renderer:
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
-        surface.blit(lines_surface, ((width - lines_surface.get_width()),
-                                     (title_surface.get_height() + space)))
+        surface.blit(lines_surface, ((width - lines_surface.get_width()), (title_surface.get_height() + space)))
         return surface
 
     def draw_current_score(self, stats):
@@ -239,8 +238,7 @@ class Renderer:
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
-        surface.blit(score_surface, ((width - score_surface.get_width()),
-                                     (title_surface.get_height() + space)))
+        surface.blit(score_surface, ((width - score_surface.get_width()), (title_surface.get_height() + space)))
         return surface
 
     def draw_high_scores(self, stats):
