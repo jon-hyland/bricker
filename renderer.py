@@ -4,7 +4,7 @@ from pygame.font import Font
 from color import Color
 
 
-class FrameRenderer:
+class Renderer:
     """ Handles surface drawing, blitting, rendering. """
 
     def __init__(self, screen_size, screen, clock):

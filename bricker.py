@@ -1,7 +1,7 @@
 import pygame
 from pygame.time import Clock
 from matrix import Matrix
-from frame_renderer import FrameRenderer
+from renderer import Renderer
 from explode import Explode
 
 
@@ -13,7 +13,7 @@ def main() -> None:
     screen_size = (1000, 700)
     screen = pygame.display.set_mode(screen_size)
     clock = Clock()
-    renderer = FrameRenderer(screen_size, screen, clock)
+    renderer = Renderer(screen_size, screen, clock)
     matrix = Matrix(renderer)
     menu_selection = 0
     in_game = False
@@ -30,7 +30,7 @@ def main() -> None:
             pass
 
 
-def menu_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix, in_game: bool) -> None:
+def menu_loop(clock: Clock, renderer: Renderer, matrix: Matrix, in_game: bool) -> None:
     """The main menu loop."""
 
     # vars
@@ -74,7 +74,7 @@ def menu_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix, in_game: bo
         renderer.draw_menu(matrix, menu_selection, in_game)
 
 
-def high_score_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix):
+def high_score_loop(clock: Clock, renderer: Renderer, matrix: Matrix):
     """The main menu loop."""
 
     # vars
@@ -118,7 +118,7 @@ def high_score_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix):
     matrix.stats.add_high_score(initials)
 
 
-def game_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix):
+def game_loop(clock: Clock, renderer: Renderer, matrix: Matrix):
     """The game loop."""
 
     # vars
