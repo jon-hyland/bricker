@@ -1,0 +1,34 @@
+[MASTER]
+disable=
+    missing-module-docstring,
+    bare-except,
+    broad-except
+
+extension-pkg-whitelist=
+    pygame
+
+
+[FORMAT]
+good-names=
+    i,
+    j,
+    k,
+    ex,
+    e,
+    x,
+    y,
+    z,
+    x1,
+    x2,
+    y1,
+    y2
+
+max-line-length=160
+
+
+[DESIGN]
+max-attributes=25
+max-statements=100
+max-locals=25
+max-branches=20
+max-nested-blocks=20

@@ -1,8 +1,10 @@
 import pygame
+from pygame import Surface
+from pygame.font import Font
 from color import Color
 
 
-class Draw:
+class FrameRenderer:
     """ Handles surface drawing, blitting, rendering. """
 
     def __init__(self, screen_size, screen, clock):
@@ -10,17 +12,18 @@ class Draw:
         self.screen_size = screen_size
         self.screen = screen
         self.clock = clock
-        self.font_title = pygame.font.Font("zorque.ttf", 64)
-        self.font_large = pygame.font.Font("zorque.ttf", 42)
-        self.font_med = pygame.font.Font("zorque.ttf", 28)
-        self.font_small = pygame.font.Font("zorque.ttf", 18)
+        self.font_title = Font("zorque.ttf", 64)
+        self.font_large = Font("zorque.ttf", 42)
+        self.font_med = Font("zorque.ttf", 28)
+        self.font_small = Font("zorque.ttf", 18)
         self.blank_grid_surface = self.draw_blank_grid()
         self.error = False
         self.debug = False
 
     @staticmethod
-    def create_surface(size):
-        surface = pygame.Surface(size, pygame.SRCALPHA, 32)
+    def create_surface(size) -> Surface:
+        """Returns a new Surface instance."""
+        surface = Surface(size, pygame.SRCALPHA, 32)
         surface = surface.convert_alpha(surface)
         return surface
 
@@ -134,13 +137,11 @@ class Draw:
         """ Draws the title surface. """
         title_surface = self.font_title.render("bricker", True, Color.White)
         version_surface = self.font_small.render("www.intsol.tech", True, Color.White)
-        surface = self.create_surface((title_surface.get_width(),
-                                      (title_surface.get_height() + version_surface.get_height())))
+        surface = self.create_surface((title_surface.get_width(), (title_surface.get_height() + version_surface.get_height())))
         if self.debug:
             surface.fill(Color.PortlandOrange)
         surface.blit(title_surface, (0, 0))
-        surface.blit(version_surface, (surface.get_width() - version_surface.get_width() - 5,
-                                       title_surface.get_height() - 10))
+        surface.blit(version_surface, (surface.get_width() - version_surface.get_width() - 5, title_surface.get_height() - 10))
         return surface
 
     def draw_controls(self):
@@ -314,25 +315,18 @@ class Draw:
         surface.fill(Color.Black)
         pygame.draw.line(surface, Color.White, (0, 0), (surface.get_width() - 1, 0), 1)
         pygame.draw.line(surface, Color.White, (0, 1), (surface.get_width() - 1, 1), 1)
-        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 2),
-                         (surface.get_width() - 1, surface.get_height() - 2), 1)
-        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 1),
-                         (surface.get_width() - 1, surface.get_height() - 1), 1)
+        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 2), (surface.get_width() - 1, surface.get_height() - 2), 1)
+        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 1), (surface.get_width() - 1, surface.get_height() - 1), 1)
         pygame.draw.line(surface, Color.White, (0, 0), (0, surface.get_height() - 1), 1)
         pygame.draw.line(surface, Color.White, (1, 0), (1, surface.get_height() - 1), 1)
-        pygame.draw.line(surface, Color.White, (surface.get_width() - 2, 0),
-                         (surface.get_width() - 2, surface.get_height() - 1), 1)
-        pygame.draw.line(surface, Color.White, (surface.get_width() - 1, 0),
-                         (surface.get_width() - 1, surface.get_height() - 1), 1)
+        pygame.draw.line(surface, Color.White, (surface.get_width() - 2, 0), (surface.get_width() - 2, surface.get_height() - 1), 1)
+        pygame.draw.line(surface, Color.White, (surface.get_width() - 1, 0), (surface.get_width() - 1, surface.get_height() - 1), 1)
         surface.blit(resume_surface, ((surface.get_width() - resume_surface.get_width()) // 2, spacing + 2))
-        surface.blit(new_surface, ((surface.get_width() - new_surface.get_width()) // 2,
-                                   (spacing * 2) + new_surface.get_height() + 2))
-        surface.blit(quit_surface, ((surface.get_width() - quit_surface.get_width()) // 2,
-                                    (spacing * 3) + (quit_surface.get_height() * 2) + 2))
+        surface.blit(new_surface, ((surface.get_width() - new_surface.get_width()) // 2, (spacing * 2) + new_surface.get_height() + 2))
+        surface.blit(quit_surface, ((surface.get_width() - quit_surface.get_width()) // 2, (spacing * 3) + (quit_surface.get_height() * 2) + 2))
 
         frame = self.draw_frame(matrix, None)
-        frame.blit(surface, ((frame.get_width() - surface.get_width()) // 2,
-                             (frame.get_height() - surface.get_height()) // 2))
+        frame.blit(surface, ((frame.get_width() - surface.get_width()) // 2, (frame.get_height() - surface.get_height()) // 2))
 
         self.event_pump()
         self.screen.blit(frame, (0, 0))
@@ -368,24 +362,19 @@ class Draw:
         surface.fill(Color.Black)
         pygame.draw.line(surface, Color.White, (0, 0), (surface.get_width() - 1, 0), 1)
         pygame.draw.line(surface, Color.White, (0, 1), (surface.get_width() - 1, 1), 1)
-        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 2),
-                         (surface.get_width() - 1, surface.get_height() - 2), 1)
-        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 1),
-                         (surface.get_width() - 1, surface.get_height() - 1), 1)
+        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 2), (surface.get_width() - 1, surface.get_height() - 2), 1)
+        pygame.draw.line(surface, Color.White, (0, surface.get_height() - 1), (surface.get_width() - 1, surface.get_height() - 1), 1)
         pygame.draw.line(surface, Color.White, (0, 0), (0, surface.get_height() - 1), 1)
         pygame.draw.line(surface, Color.White, (1, 0), (1, surface.get_height() - 1), 1)
-        pygame.draw.line(surface, Color.White, (surface.get_width() - 2, 0),
-                         (surface.get_width() - 2, surface.get_height() - 1), 1)
-        pygame.draw.line(surface, Color.White, (surface.get_width() - 1, 0),
-                         (surface.get_width() - 1, surface.get_height() - 1), 1)
+        pygame.draw.line(surface, Color.White, (surface.get_width() - 2, 0), (surface.get_width() - 2, surface.get_height() - 1), 1)
+        pygame.draw.line(surface, Color.White, (surface.get_width() - 1, 0), (surface.get_width() - 1, surface.get_height() - 1), 1)
 
         surface.blit(line1, ((surface.get_width() - line1.get_width()) // 2, spacing + 2))
         surface.blit(line2, ((surface.get_width() - line2.get_width()) // 2, spacing + line1.get_height() + 2))
         surface.blit(initials, ((surface.get_width() - initials.get_width()) // 2, (spacing * 2) + line1.get_height() + line2.get_height() + 2))
 
         frame = self.draw_frame(matrix, None)
-        frame.blit(surface, ((frame.get_width() - surface.get_width()) // 2,
-                             (frame.get_height() - surface.get_height()) // 2))
+        frame.blit(surface, ((frame.get_width() - surface.get_width()) // 2, (frame.get_height() - surface.get_height()) // 2))
 
         self.event_pump()
         self.screen.blit(frame, (0, 0))

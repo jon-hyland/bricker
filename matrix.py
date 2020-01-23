@@ -6,9 +6,9 @@ from game_stats import GameStats
 class Matrix:
     """ Stores the 10x20 game matrix.  Contains game logic. """
 
-    def __init__(self, draw):
+    def __init__(self, renderer):
         """ Class constructor. """
-        self.draw = draw
+        self.renderer = renderer
         self.width = 12     # 10 visible slots, plus border for collision detection
         self.height = 22    # 20 visible slots, plus border for collision detection
         self.matrix = [[0 for x in range(self.height)] for y in range(self.width)]
@@ -24,7 +24,7 @@ class Matrix:
         self.next_brick = None
         self.level_drop_intervals = []
         interval = 2.0
-        for i in range(0, 10):
+        for _ in range(0, 10):
             interval *= 0.8
             self.level_drop_intervals.append(interval)
 
@@ -105,8 +105,8 @@ class Matrix:
             self.stats.current_score += points
             self.erase_filled_rows(rows_to_erase)
             self.drop_grid()
-            self.draw.event_pump()
-            self.draw.update_frame(self, None)
+            self.renderer.event_pump()
+            self.renderer.update_frame(self, None)
         collision = self.spawn_brick()
         return collision
 
@@ -133,13 +133,13 @@ class Matrix:
         """ Animates a brick dropping to bottom of screen, one motion """
         hit = False
         while not hit:
-            self.draw.clock.tick(30)
-            for i in range(0, 3):
+            self.renderer.clock.tick(30)
+            for _ in range(0, 3):
                 hit = self.move_brick_down()
                 if hit:
                     break
-            self.draw.event_pump()
-            self.draw.update_frame(self, None)
+            self.renderer.event_pump()
+            self.renderer.update_frame(self, None)
         self.stats.current_score += 2
         return True
 
@@ -150,8 +150,8 @@ class Matrix:
                 self.matrix[x][y] = 0
                 self.color[x][y] = 0, 0, 0
             if (x % 2) == 0:
-                self.draw.event_pump()
-                self.draw.update_frame(self, None)
+                self.renderer.event_pump()
+                self.renderer.update_frame(self, None)
 
     def drop_grid(self):
         """ Drops hanging pieces to resting place. """
@@ -192,6 +192,3 @@ class Matrix:
             self.matrix[x][1] = 0
             self.color[x][1] = 0, 0, 0
         return True
-
-
-

@@ -1,51 +1,53 @@
 import pygame
+from pygame.time import Clock
 from matrix import Matrix
-from draw import Draw
+from frame_renderer import FrameRenderer
 from explode import Explode
 
 
-def main():
-    """ Main program entry point. """
+def main() -> None:
+    """Main program entry point."""
 
     # init
     pygame.init()
-    screen_size = 1000, 700
+    screen_size = (1000, 700)
     screen = pygame.display.set_mode(screen_size)
-    clock = pygame.time.Clock()
-    draw = Draw(screen_size, screen, clock)
-    matrix = Matrix(draw)
+    clock = Clock()
+    renderer = FrameRenderer(screen_size, screen, clock)
+    matrix = Matrix(renderer)
     menu_selection = 0
     in_game = False
 
     # menu loop
     while menu_selection != 3:
-        menu_selection = menu_loop(clock, draw, matrix, in_game)
+        menu_selection = menu_loop(clock, renderer, matrix, in_game)
         if menu_selection == 1:
-            in_game = game_loop(clock, draw, matrix)
+            in_game = game_loop(clock, renderer, matrix)
         elif menu_selection == 2:
             matrix.new_game()
-            in_game = game_loop(clock, draw, matrix)
+            in_game = game_loop(clock, renderer, matrix)
         elif menu_selection == 3:
             pass
 
 
-def menu_loop(clock, draw, matrix, in_game):
-    """ The main menu loop. """
+def menu_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix, in_game: bool) -> None:
+    """The main menu loop."""
+
     # vars
     menu_selection = 1
     if not in_game:
         menu_selection = 2
 
     # loop until selection
-    while 1:
+    while True:
+
         # limit fps
         clock.tick(60)
 
         # handle user events
         for event in pygame.event.get():
             # up
-            if event.type == pygame.KEYDOWN \
-                    and (event.key == pygame.K_LEFT or event.key == pygame.K_UP):
+            if event.type == pygame.KEYDOWN and (event.key == pygame.K_LEFT or event.key == pygame.K_UP):
                 menu_selection -= 1
                 if in_game:
                     if menu_selection < 1:
@@ -55,8 +57,7 @@ def menu_loop(clock, draw, matrix, in_game):
                         menu_selection = 3
 
             # down
-            elif event.type == pygame.KEYDOWN \
-                    and (event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN):
+            elif event.type == pygame.KEYDOWN and (event.key == pygame.K_RIGHT or event.key == pygame.K_DOWN):
                 menu_selection += 1
                 if in_game:
                     if menu_selection > 3:
@@ -66,16 +67,16 @@ def menu_loop(clock, draw, matrix, in_game):
                         menu_selection = 2
 
             # enter
-            elif event.type == pygame.KEYDOWN \
-                    and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
+            elif event.type == pygame.KEYDOWN and (event.key == pygame.K_SPACE or event.key == pygame.K_RETURN):
                 return menu_selection
 
         # draw menu
-        draw.draw_menu(matrix, menu_selection, in_game)
+        renderer.draw_menu(matrix, menu_selection, in_game)
 
 
-def high_score_loop(clock, draw, matrix):
-    """ The main menu loop. """
+def high_score_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix):
+    """The main menu loop."""
+
     # vars
     chars = list("   ")
     pos = 0
@@ -111,20 +112,21 @@ def high_score_loop(clock, draw, matrix):
                         done = True
 
         # draw frame
-        draw.draw_initials_input(matrix, chars)
+        renderer.draw_initials_input(matrix, chars)
 
     initials = "".join(chars).lower()
     matrix.stats.add_high_score(initials)
 
 
-def game_loop(clock, draw, matrix):
-    """ The game loop. """
+def game_loop(clock: Clock, renderer: FrameRenderer, matrix: Matrix):
+    """The game loop."""
+
     # vars
     game_over = False
 
     # event loop
     while not game_over:
-        draw.error = False
+        renderer.error = False
         hit = False
         try:
             # limit fps
@@ -158,21 +160,21 @@ def game_loop(clock, draw, matrix):
 
                 # level up
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEUP:
-                    if draw.debug:
+                    if renderer.debug:
                         matrix.stats.level += 1
                         if matrix.stats.level > 10:
                             matrix.stats.level = 10
 
                 # level down
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_PAGEDOWN:
-                    if draw.debug:
+                    if renderer.debug:
                         matrix.stats.level -= 1
                         if matrix.stats.level < 1:
                             matrix.stats.level = 1
 
                 # debug toggle
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_d:
-                    draw.debug = not draw.debug
+                    renderer.debug = not renderer.debug
 
             # drop brick timer?
             if matrix.is_drop_time():    # add drop interval
@@ -185,17 +187,17 @@ def game_loop(clock, draw, matrix):
         # handle error
         except Exception as ex:
             print(str(ex))
-            draw.error = True
+            renderer.error = True
 
         # draw frame
-        draw.update_frame(matrix, None)
+        renderer.update_frame(matrix, None)
 
     # game over
     matrix.add_brick_to_matrix()
-    explode = Explode(clock, draw)
+    explode = Explode(clock, renderer)
     explode.explode_spaces(matrix)
     if matrix.stats.is_high_score():
-        high_score_loop(clock, draw, matrix)
+        high_score_loop(clock, renderer, matrix)
     return False
 
 

@@ -3,12 +3,12 @@ from color import Color
 
 
 class Brick:
-    """ Represents a live, moving brick that has not yet joined the static game matrix. """
-    """ It will do so once it's hit bottom and come to rest. """
+    """Represents a live, moving brick that has not yet joined the static game matrix.
+    It will do so once it's hit bottom and come to rest."""
 
-    def __init__(self, shape_num):
-        """ Class constructor.  Creates one of seven basic shapes. """
-        self.shape_num = shape_num
+    def __init__(self, shape_num: int) -> None:
+        """Class constructor.  Creates one of seven basic shapes."""
+        self.__shape_num: int = shape_num
         if shape_num == 1:
             self.width = 4
             self.height = 4
@@ -79,6 +79,7 @@ class Brick:
         self.last_drop_time = perf_counter()
 
     def get_top_space(self):
+        """Returns space above brick."""
         top_space = 0
         for y in range(0, self.height):
             empty = True
@@ -92,6 +93,7 @@ class Brick:
         return top_space
 
     def get_bottom_space(self):
+        """Returns space below brick."""
         bottom_space = 0
         for y in reversed(range(0, self.height)):
             empty = True
@@ -105,6 +107,7 @@ class Brick:
         return bottom_space
 
     def collision(self, matrix):
+        """Returns true on brick collision."""
         for x in range(0, self.width):
             for y in range(0, self.height):
                 matrix_x = x + self.x
@@ -114,16 +117,19 @@ class Brick:
         return False
 
     def move_left(self, matrix):
+        """Moves brick left, prevents collision."""
         self.x -= 1
         if self.collision(matrix):
             self.x += 1
 
     def move_right(self, matrix):
+        """Moves brick right, prevents collision."""
         self.x += 1
         if self.collision(matrix):
             self.x -= 1
 
     def move_down(self, matrix):
+        """Moves brick down, prevents collision."""
         self.last_drop_time = perf_counter()
         self.y += 1
         if self.collision(matrix):
@@ -132,12 +138,15 @@ class Brick:
         return False
 
     def is_drop_time(self, interval):
+        """Returns true if its time to drop brick (gravity)."""
         now = perf_counter()
         elapsed = now - self.last_drop_time
         drop_time = elapsed >= interval
         return drop_time
 
     def rotate(self, matrix):
+        """Rotates brick."""
+
         new_grid = [[0 for x in range(self.width)] for y in range(self.height)]
         for x1 in range(0, self.width):
             for y1 in range(0, self.height):
@@ -177,4 +186,3 @@ class Brick:
             if steps >= 3:
                 self.x -= 3
                 break
-
