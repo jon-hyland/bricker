@@ -135,13 +135,14 @@ def game_loop(clock: Clock, renderer: Renderer, matrix: Matrix):
 
         # handle user events
         for event in pygame.event.get():
+
             # left
             if event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT:
-                matrix.move_brick_left()
+                move_brick_left(matrix)
 
             # right
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT:
-                matrix.move_brick_right()
+                move_brick_right(matrix)
 
             # down
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN:
@@ -196,6 +197,21 @@ def game_loop(clock: Clock, renderer: Renderer, matrix: Matrix):
     if matrix.stats.is_high_score():
         high_score_loop(clock, renderer, matrix)
     return False
+
+
+def move_brick_left(matrix: Matrix):
+    """Moves brick left."""
+    matrix.move_brick_left()
+
+
+def move_brick_right(matrix: Matrix):
+    """Moves brick right."""
+    matrix.move_brick_right()
+
+
+def move_brick_down(matrix: Matrix):
+    """Moves brick down."""
+    hit = matrix.move_brick_down()
 
 
 # start main function

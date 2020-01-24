@@ -1,10 +1,11 @@
-from typing import Tuple
+from typing import Tuple, List, Optional
 import pygame
 from pygame import Surface
 from pygame.font import Font
 from pygame.time import Clock
 from color import Color
 from matrix import Matrix
+from explode import ExplodingSpace
 
 
 class Renderer:
@@ -54,13 +55,13 @@ class Renderer:
         """Pumps the event queue, allowing frames to be rendered outside primary event loop."""
         pygame.event.pump()
 
-    def update_frame(self, matrix: Matrix, spaces <- HERE):
+    def update_frame(self, matrix: Matrix, spaces: Optional[List[ExplodingSpace]] = None):
         """Draws and flips the entire screen frame."""
         frame = self.draw_frame(matrix, spaces)
         self.__screen.blit(frame, (0, 0))
         pygame.display.flip()
 
-    def draw_frame(self, matrix, spaces):
+    def draw_frame(self, matrix, spaces: Optional[List[ExplodingSpace]] = None):
         """Draws the primary game screen surface."""
         # vars
         side_width = (self.__screen_size[0] - 333) // 2
