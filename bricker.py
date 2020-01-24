@@ -11,7 +11,7 @@ def main() -> None:
     # init
     pygame.init()
     screen_size = (1000, 700)
-    screen = pygame.display.set_mode(screen_size)
+    screen = pygame.display.set_mode(size=screen_size)
     clock = Clock()
     renderer = Renderer(screen_size, screen, clock)
     matrix = Matrix(renderer)
