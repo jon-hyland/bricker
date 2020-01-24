@@ -1,4 +1,5 @@
 import pygame
+from pygame import Surface
 from pygame.time import Clock
 from matrix import Matrix
 from renderer import Renderer
@@ -11,8 +12,8 @@ def main() -> None:
     # init
     pygame.init()
     screen_size = (1000, 700)
-    screen = pygame.display.set_mode(size=screen_size)
-    clock = Clock()
+    screen: Surface = pygame.display.set_mode(screen_size)
+    clock: Clock = Clock()
     renderer = Renderer(screen_size, screen, clock)
     matrix = Matrix(renderer)
     menu_selection = 0
@@ -46,6 +47,7 @@ def menu_loop(clock: Clock, renderer: Renderer, matrix: Matrix, in_game: bool) -
 
         # handle user events
         for event in pygame.event.get():
+
             # up
             if event.type == pygame.KEYDOWN and (event.key == pygame.K_LEFT or event.key == pygame.K_UP):
                 menu_selection -= 1
@@ -126,7 +128,6 @@ def game_loop(clock: Clock, renderer: Renderer, matrix: Matrix):
 
     # event loop
     while not game_over:
-        renderer.error = False
         hit = False
 
         # limit fps
@@ -153,6 +154,7 @@ def game_loop(clock: Clock, renderer: Renderer, matrix: Matrix):
             # drop
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 hit = matrix.drop_brick_to_bottom()
+                hit = True
 
             # menu
             elif event.type == pygame.KEYDOWN and (event.key == pygame.K_ESCAPE or event.key == pygame.K_q):

@@ -126,3 +126,6 @@ venv.bak/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# bricker high scores file
+high_scores.txt
