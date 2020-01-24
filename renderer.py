@@ -63,6 +63,7 @@ class Renderer:
 
     def draw_frame(self, matrix, spaces: Optional[List[ExplodingSpace]] = None):
         """Draws the primary game screen surface."""
+        
         # vars
         side_width = (self.__screen_size[0] - 333) // 2
         left_x = ((side_width - 250) // 2) + 5

@@ -2,7 +2,8 @@
 disable=
     missing-module-docstring,
     bare-except,
-    broad-except
+    broad-except,
+    invalid-name
 
 extension-pkg-whitelist=
     pygame
