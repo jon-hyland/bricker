@@ -33,3 +33,5 @@ max-statements=100
 max-locals=25
 max-branches=20
 max-nested-blocks=20
+min-public-methods: 0
+max-public-methods: 25

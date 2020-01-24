@@ -1,27 +1,33 @@
+from typing import List
 from random import randint
 from time import perf_counter
+from pygame.time import Clock
+from renderer import Renderer
+from matrix import Matrix
 
 
 class Explode:
-    def __init__(self, clock, draw):
-        self.clock = clock
-        self.draw = draw
+    """Explodes matrix spaces outwards on game over."""
+    def __init__(self, clock: Clock, renderer: Renderer):
+        self.__clock = clock
+        self.__renderer = renderer
 
-    def explode_spaces(self, matrix):
-        spaces = []
+    def explode_spaces(self, matrix: Matrix):
+        """Explodes matrix spaces outwards on game over."""
+        spaces: List[Space] = []
         for x in range(1, 11):
             for y in range(1, 21):
                 if matrix.matrix[x][y] == 1:
-                    sx = (((x - 1) * 33) + 2) + ((self.draw.screen_size[0] - 333) // 2) - 1
-                    sy = (((y - 1) * 33) + 2) + ((self.draw.screen_size[1] - 663) // 2) - 1
-                    spaces.append(Space(sx, sy, matrix.color[x][y]))
+                    space_x = (((x - 1) * 33) + 2) + ((self.__renderer.screen_size[0] - 333) // 2) - 1
+                    space_y = (((y - 1) * 33) + 2) + ((self.__renderer.screen_size[1] - 663) // 2) - 1
+                    spaces.append(Space(space_x, space_y, matrix.color[x][y]))
                     matrix.matrix[x][y] = 0
                     matrix.color[x][y] = 0, 0, 0
         start_time = perf_counter()
         have_spaces = True
         while have_spaces:
-            self.clock.tick(30)
-            self.draw.update_frame(matrix, spaces)
+            self.__clock.tick(30)
+            self.__renderer.update_frame(matrix, spaces)
             seconds = perf_counter() - start_time
             have_spaces = False
             for space in spaces:
@@ -32,6 +38,7 @@ class Explode:
 
 
 class Space:
+    """Represents a matrix space."""
     def __init__(self, x, y, color):
         self.x = float(x)
         self.y = float(y)

@@ -170,7 +170,7 @@ class Brick:
             self.__x -= 1
 
     def move_down(self, matrix):
-        """Moves brick down, prevents collision."""
+        """Moves brick down, prevents collision.  Returns true if move would have hit bottom."""
         self.__last_drop_time = perf_counter()
         self.__y += 1
         if self.collision(matrix):
