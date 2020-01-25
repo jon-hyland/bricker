@@ -1,6 +1,6 @@
 from typing import List
 from time import perf_counter
-from color import Color
+from color import Colors, Color
 
 
 class Brick:
@@ -18,7 +18,7 @@ class Brick:
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
             self.__grid[3][2] = 1
-            self.__color = Color.SilverPink
+            self.__color = Colors.SilverPink
         elif shape_num == 2:
             self.__width: int = 3
             self.__height: int = 3
@@ -27,7 +27,7 @@ class Brick:
             self.__grid[0][2] = 1
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
-            self.__color = Color.TuftsBlue
+            self.__color = Colors.TuftsBlue
         elif shape_num == 3:
             self.__width: int = 3
             self.__height: int = 3
@@ -36,7 +36,7 @@ class Brick:
             self.__grid[0][2] = 1
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
-            self.__color = Color.ChromeYellow
+            self.__color = Colors.ChromeYellow
         elif shape_num == 4:
             self.__width: int = 2
             self.__height: int = 2
@@ -45,7 +45,7 @@ class Brick:
             self.__grid[0][1] = 1
             self.__grid[1][0] = 1
             self.__grid[1][1] = 1
-            self.__color = Color.Independence
+            self.__color = Colors.Independence
         elif shape_num == 5:
             self.__width: int = 3
             self.__height: int = 3
@@ -54,7 +54,7 @@ class Brick:
             self.__grid[2][0] = 1
             self.__grid[0][1] = 1
             self.__grid[1][1] = 1
-            self.__color = Color.ForestGreen
+            self.__color = Colors.ForestGreen
         elif shape_num == 6:
             self.__width: int = 3
             self.__height: int = 3
@@ -63,7 +63,7 @@ class Brick:
             self.__grid[0][2] = 1
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
-            self.__color = Color.Byzantine
+            self.__color = Colors.Byzantine
         elif shape_num == 7:
             self.__width: int = 3
             self.__height: int = 3
@@ -72,7 +72,7 @@ class Brick:
             self.__grid[1][0] = 1
             self.__grid[1][1] = 1
             self.__grid[2][1] = 1
-            self.__color = Color.Coquelicot
+            self.__color = Colors.Coquelicot
         self.__top_space: int = self.__get_top_space()
         self.__bottom_space: int = self.__get_bottom_space()
         self.__x: int = int((12 - self.__width) / 2)

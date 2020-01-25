@@ -12,7 +12,7 @@ class Matrix:
         self.__width: int = 12     # 10 visible slots, plus border for collision detection
         self.__height: int = 22    # 20 visible slots, plus border for collision detection
         self.__matrix: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
-        self.__color: List[List[Color]] = [[(0, 0, 0) for x in range(self.__height)] for y in range(self.__width)]
+        self.__color: List[List[Color]] = [[Color(0, 0, 0) for x in range(self.__height)] for y in range(self.__width)]
         for x in range(0, 12):
             self.__matrix[x][0] = 1
             self.__matrix[x][21] = 1
@@ -43,12 +43,12 @@ class Matrix:
         return self.__color
 
     @property
-    def brick(self) -> Brick:
+    def brick(self) -> Optional[Brick]:
         """Returns current live brick."""
         return self.__brick
 
     @property
-    def next_brick(self) -> Brick:
+    def next_brick(self) -> Optional[Brick]:
         """Returns next brick."""
         return self.__next_brick
 
@@ -57,7 +57,7 @@ class Matrix:
         self.__brick = None
         self.__next_brick = None
         self.__matrix = [[0 for x in range(self.__height)] for y in range(self.__width)]
-        self.__color = [[(0, 0, 0) for x in range(self.__height)] for y in range(self.__width)]
+        self.__color = [[Color(0, 0, 0) for x in range(self.__height)] for y in range(self.__width)]
         for x in range(0, 12):
             self.__matrix[x][0] = 1
             self.__matrix[x][21] = 1

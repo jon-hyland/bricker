@@ -1,11 +1,15 @@
+# pyright: reportMissingTypeStubs=true
+
 from typing import Tuple, List
+from time import perf_counter
 import pygame
 from pygame import Surface
 from pygame.time import Clock
 from matrix import Matrix
+from color import Colors, Color
 from renderer import Renderer
-from explode import Explode
 from game_stats import GameStats
+from exploding_space import ExplodingSpace
 
 
 class Bricker:
@@ -90,7 +94,7 @@ class Bricker:
                     return menu_selection
 
             # draw menu
-            self.__renderer.draw_menu(self.__matrix, menu_selection, in_game)
+            self.__renderer.draw_menu(self.__matrix, self.__stats, menu_selection, in_game)
 
     def high_score_loop(self):
         """The main menu loop."""
@@ -129,7 +133,7 @@ class Bricker:
                             done = True
 
             # draw frame
-            self.__renderer.draw_initials_input(self.__matrix, chars)
+            self.__renderer.draw_initials_input(self.__matrix, self.__stats, chars)
 
         # add new high score
         initials = "".join(chars).lower()
@@ -206,12 +210,11 @@ class Bricker:
                 game_over = self.brick_hit()
 
             # draw frame
-            self.__renderer.update_frame(self.__matrix, None)
+            self.__renderer.update_frame(self.__matrix, self.__stats, None)
 
         # game over
         self.__matrix.add_brick_to_matrix()
-        explode = Explode(self.__clock, self.__renderer)
-        explode.explode_spaces(self.__matrix)
+        self.explode_spaces()
         if self.__stats.is_high_score():
             self.high_score_loop()
         return False
@@ -250,7 +253,7 @@ class Bricker:
                 if hit:
                     break
             self.__renderer.event_pump()
-            self.__renderer.update_frame(self, None)
+            self.__renderer.update_frame(self.__matrix, self.__stats, None)
         self.__stats.increment_score(2)
 
     def is_drop_time(self) -> bool:
@@ -278,7 +281,7 @@ class Bricker:
             self.erase_filled_rows(rows_to_erase)
             self.drop_grid()
             self.__renderer.event_pump()
-            self.__renderer.update_frame(self, None)
+            self.__renderer.update_frame(self.__matrix, self.__stats, None)
         collision = self.__matrix.spawn_brick()
         return collision
 
@@ -287,10 +290,10 @@ class Bricker:
         for x in range(1, 11):
             for y in rows_to_erase:
                 self.__matrix.matrix[x][y] = 0
-                self.__matrix.color[x][y] = 0, 0, 0
+                self.__matrix.color[x][y] = Colors.Black
             if (x % 2) == 0:
                 self.__renderer.event_pump()
-                self.__renderer.update_frame(self, None)
+                self.__renderer.update_frame(self.__matrix, self.__stats, None)
 
     def drop_grid(self) -> None:
         """Drops hanging pieces to resting place."""
@@ -329,8 +332,32 @@ class Bricker:
                 self.__matrix.color[x][y] = self.__matrix.color[x][y - 1]
         for x in range(1, 11):
             self.__matrix.matrix[x][1] = 0
-            self.__matrix.color[x][1] = 0, 0, 0
+            self.__matrix.color[x][1] = Colors.Black
         return True
+
+    def explode_spaces(self):
+        """Explodes matrix spaces outwards on game over."""
+        spaces: List[ExplodingSpace] = []
+        for x in range(1, 11):
+            for y in range(1, 21):
+                if self.__matrix.matrix[x][y] == 1:
+                    space_x = (((x - 1) * 33) + 2) + ((self.__renderer.screen_size[0] - 333) // 2) - 1
+                    space_y = (((y - 1) * 33) + 2) + ((self.__renderer.screen_size[1] - 663) // 2) - 1
+                    spaces.append(ExplodingSpace(space_x, space_y, self.__matrix.color[x][y]))
+                    self.__matrix.matrix[x][y] = 0
+                    self.__matrix.color[x][y] = Colors.Black
+        start_time = perf_counter()
+        have_spaces = True
+        while have_spaces:
+            self.__clock.tick(30)
+            self.__renderer.update_frame(self.__matrix, self.__stats, spaces)
+            seconds = perf_counter() - start_time
+            have_spaces = False
+            for space in spaces:
+                space.x += space.x_motion * seconds
+                space.y += space.y_motion * seconds
+                if (space.x > 0) and (space.x < 1000) and (space.y > 0) and (space.y < 700):
+                    have_spaces = True
 
 
 # start main function
