@@ -3,7 +3,7 @@ import pygame
 from pygame import Surface
 from pygame.font import Font
 from pygame.time import Clock
-from color import Color, Colors
+from color import Colors
 from matrix import Matrix
 from game_stats import GameStats
 from exploding_space import ExplodingSpace
@@ -12,8 +12,9 @@ from exploding_space import ExplodingSpace
 class Renderer:
     """Handles surface drawing, blitting, rendering."""
 
-    def __init__(self, screen_size: Tuple[int, int], screen: Surface, clock: Clock) -> None:
+    def __init__(self, version: str, screen_size: Tuple[int, int], screen: Surface, clock: Clock) -> None:
         """Class constructor."""
+        self.__version: str = version
         self.__screen_size: Tuple[int, int] = screen_size
         self.__screen: Surface = screen
         self.__clock: Clock = clock
@@ -21,6 +22,7 @@ class Renderer:
         self.__font_large: Font = Font("zorque.ttf", 42)
         self.__font_med: Font = Font("zorque.ttf", 28)
         self.__font_small: Font = Font("zorque.ttf", 18)
+        self.__font_tiny: Font = Font("zorque.ttf", 12)
         self.__blank_grid_surface: Surface = self.draw_blank_grid()
         self.__debug: bool = False
 
@@ -121,7 +123,7 @@ class Renderer:
 
         # draw fps?
         if self.__debug:
-            fps_surface = self.__font_small.render("fps: {0:.2f}".format(self.clock.get_fps()), True, Color.White)
+            fps_surface = self.__font_small.render("fps: {0:.2f}".format(self.clock.get_fps()), True, Colors.White.value)
             frame.blit(fps_surface, (left_x, (self.__screen_size[1] - fps_surface.get_height()) - 15))
 
         # return
@@ -156,12 +158,12 @@ class Renderer:
     def draw_title(self) -> Surface:
         """Draws the title surface."""
         title_surface = self.__font_title.render("bricker", True, Colors.White.value)
-        version_surface = self.__font_small.render("www.intsol.tech", True, Colors.White.value)
+        version_surface = self.__font_tiny.render(f"V{self.__version}   (C) 2017-2020  JOHN HYLAND", True, Colors.White.value)
         surface = self.__create_surface((title_surface.get_width(), (title_surface.get_height() + version_surface.get_height())))
         if self.__debug:
-            surface.fill(Colors.PortlandOrange)
+            surface.fill(Colors.PortlandOrange.value)
         surface.blit(title_surface, (0, 0))
-        surface.blit(version_surface, (surface.get_width() - version_surface.get_width() - 5, title_surface.get_height() - 10))
+        surface.blit(version_surface, (surface.get_width() - version_surface.get_width() - 5, title_surface.get_height() - 7))
         return surface
 
     def draw_controls(self) -> Surface:

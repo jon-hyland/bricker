@@ -1,12 +1,10 @@
-# pyright: reportMissingTypeStubs=true
-
 from typing import Tuple, List
 from time import perf_counter
 import pygame
 from pygame import Surface
 from pygame.time import Clock
 from matrix import Matrix
-from color import Colors, Color
+from color import Colors
 from renderer import Renderer
 from game_stats import GameStats
 from exploding_space import ExplodingSpace
@@ -18,6 +16,13 @@ class Bricker:
     def __init__(self) -> None:
         """Class constructor."""
 
+        # load version
+        try:
+            with open("version", "r") as file:
+                version = file.readline().strip()
+        except Exception:
+            version = "1.0"
+
         # init pygame framework
         pygame.init()
 
@@ -25,7 +30,7 @@ class Bricker:
         self.__screen_size: Tuple[int, int] = (1000, 700)
         self.__screen: Surface = pygame.display.set_mode(self.__screen_size)
         self.__clock: Clock = Clock()
-        self.__renderer: Renderer = Renderer(self.__screen_size, self.__screen, self.__clock)
+        self.__renderer: Renderer = Renderer(version, self.__screen_size, self.__screen, self.__clock)
         self.__matrix: Matrix = Matrix()
         self.__stats: GameStats = GameStats()
         self.__level_drop_intervals: List[float] = []
@@ -38,11 +43,10 @@ class Bricker:
         """Runs main game logic."""
 
         # vars
-        menu_selection = 0
         in_game = False
 
         # menu loop
-        while menu_selection != 3:
+        while True:
             menu_selection = self.menu_loop(in_game)
             if menu_selection == 1:
                 in_game = self.game_loop()
@@ -50,9 +54,10 @@ class Bricker:
                 self.new_game()
                 in_game = self.game_loop()
             elif menu_selection == 3:
-                pass
+                self.explode_spaces()
+                break
 
-    def menu_loop(self, in_game: bool) -> None:
+    def menu_loop(self, in_game: bool) -> int:
         """The main menu loop."""
 
         # vars
@@ -120,8 +125,6 @@ class Bricker:
                             char = str(pygame.key.name(event.key))
                             chars[pos] = char
                             pos += 1
-                            if pos > 3:
-                                pos = 3
                     elif event.key == pygame.K_BACKSPACE:
                         pos -= 1
                         if pos < 0:
@@ -129,8 +132,7 @@ class Bricker:
                         if pos <= 2:
                             chars[pos] = " "
                     elif event.key == pygame.K_RETURN:
-                        if len("".join(chars).strip()) == 3:
-                            done = True
+                        done = True
 
             # draw frame
             self.__renderer.draw_initials_input(self.__matrix, self.__stats, chars)
@@ -138,7 +140,6 @@ class Bricker:
         # add new high score
         initials = "".join(chars).lower()
         self.__stats.add_high_score(initials)
-
 
     def game_loop(self):
         """The main game loop."""
@@ -213,7 +214,6 @@ class Bricker:
             self.__renderer.update_frame(self.__matrix, self.__stats, None)
 
         # game over
-        self.__matrix.add_brick_to_matrix()
         self.explode_spaces()
         if self.__stats.is_high_score():
             self.high_score_loop()
@@ -337,6 +337,7 @@ class Bricker:
 
     def explode_spaces(self):
         """Explodes matrix spaces outwards on game over."""
+        self.__matrix.add_brick_to_matrix()
         spaces: List[ExplodingSpace] = []
         for x in range(1, 11):
             for y in range(1, 21):

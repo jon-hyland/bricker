@@ -80,6 +80,11 @@ class Brick:
         self.__last_drop_time: float = perf_counter()
 
     @property
+    def shape_num(self) -> int:
+        """Returns the shape number."""
+        return self.__shape_num
+
+    @property
     def width(self) -> int:
         """Returns brick width."""
         return self.__width

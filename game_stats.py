@@ -33,6 +33,11 @@ class GameStats:
         """Returns the current level."""
         return self.__level
 
+    @level.setter
+    def level(self, value: int) -> None:
+        """Sets the current level."""
+        self.__level = value
+
     def __load_high_scores(self) -> List['HighScore']:
         """Load high scores from file."""
         scores = []

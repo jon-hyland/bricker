@@ -10,8 +10,8 @@ class ExplodingSpace:
         self.__x = float(x)
         self.__y = float(y)
         self.__color = color
-        self.__x_motion = (randint(0, 3000) / 10) + 10
-        self.__y_motion = (randint(0, 3000) / 10) + 10
+        self.__x_motion = (float(randint(0, 3000)) / 10.0) + 50.0
+        self.__y_motion = (float(randint(0, 3000)) / 10.0) + 50.0
         if randint(0, 1) == 1:
             self.__x_motion = -self.__x_motion
         if randint(0, 1) == 1:
