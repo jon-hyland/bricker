@@ -350,8 +350,6 @@ class Bricker:
         start_time = perf_counter()
         have_spaces = True
         while have_spaces:
-            self.__clock.tick(30)
-            self.__renderer.update_frame(self.__matrix, self.__stats, spaces)
             seconds = perf_counter() - start_time
             have_spaces = False
             for space in spaces:
@@ -359,6 +357,8 @@ class Bricker:
                 space.y += space.y_motion * seconds
                 if (space.x > 0) and (space.x < 1000) and (space.y > 0) and (space.y < 700):
                     have_spaces = True
+            self.__clock.tick(30)
+            self.__renderer.update_frame(self.__matrix, self.__stats, spaces)
 
 
 # start main function

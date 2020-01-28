@@ -1,3 +1,7 @@
+"""Bricker - A Tetris-like brick game.
+Copyright (C) 2017-2020  John Hyland
+GNU GENERAL PUBLIC LICENSE Version 3"""
+
 from typing import List
 import sys
 import os.path
