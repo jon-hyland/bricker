@@ -1,3 +1,7 @@
+"""Bricker - A Tetris-like brick game.
+Copyright (C) 2017-2020  John Hyland
+GNU GENERAL PUBLIC LICENSE Version 3"""
+
 from typing import List
 from time import perf_counter
 from color import Colors, Color
@@ -20,54 +24,54 @@ class Brick:
             self.__grid[3][2] = 1
             self.__color = Colors.SilverPink
         elif shape_num == 2:
-            self.__width: int = 3
-            self.__height: int = 3
-            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__width = 3
+            self.__height = 3
+            self.__grid = [[0 for x in range(self.__height)] for y in range(self.__width)]
             self.__grid[0][1] = 1
             self.__grid[0][2] = 1
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
             self.__color = Colors.TuftsBlue
         elif shape_num == 3:
-            self.__width: int = 3
-            self.__height: int = 3
-            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__width = 3
+            self.__height = 3
+            self.__grid = [[0 for x in range(self.__height)] for y in range(self.__width)]
             self.__grid[2][1] = 1
             self.__grid[0][2] = 1
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
             self.__color = Colors.ChromeYellow
         elif shape_num == 4:
-            self.__width: int = 2
-            self.__height: int = 2
-            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__width = 2
+            self.__height = 2
+            self.__grid = [[0 for x in range(self.__height)] for y in range(self.__width)]
             self.__grid[0][0] = 1
             self.__grid[0][1] = 1
             self.__grid[1][0] = 1
             self.__grid[1][1] = 1
             self.__color = Colors.Independence
         elif shape_num == 5:
-            self.__width: int = 3
-            self.__height: int = 3
-            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__width = 3
+            self.__height = 3
+            self.__grid = [[0 for x in range(self.__height)] for y in range(self.__width)]
             self.__grid[1][0] = 1
             self.__grid[2][0] = 1
             self.__grid[0][1] = 1
             self.__grid[1][1] = 1
             self.__color = Colors.ForestGreen
         elif shape_num == 6:
-            self.__width: int = 3
-            self.__height: int = 3
-            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__width = 3
+            self.__height = 3
+            self.__grid = [[0 for x in range(self.__height)] for y in range(self.__width)]
             self.__grid[1][1] = 1
             self.__grid[0][2] = 1
             self.__grid[1][2] = 1
             self.__grid[2][2] = 1
             self.__color = Colors.Byzantine
         elif shape_num == 7:
-            self.__width: int = 3
-            self.__height: int = 3
-            self.__grid: List[List[int]] = [[0 for x in range(self.__height)] for y in range(self.__width)]
+            self.__width = 3
+            self.__height = 3
+            self.__grid = [[0 for x in range(self.__height)] for y in range(self.__width)]
             self.__grid[0][0] = 1
             self.__grid[1][0] = 1
             self.__grid[1][1] = 1

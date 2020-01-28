@@ -2,8 +2,6 @@
 Copyright (C) 2017-2020  John Hyland
 GNU GENERAL PUBLIC LICENSE Version 3"""
 
-# pylint: disable=too-few-public-methods
-
 from typing import Tuple
 
 
