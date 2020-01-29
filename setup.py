@@ -16,7 +16,7 @@ except Exception:
 
 try:
     with open("README.rst", "r") as file:
-        description = file.readline().strip()
+        description = file.read()
 except Exception:
     description = ""
 
