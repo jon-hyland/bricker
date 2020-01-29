@@ -9,7 +9,7 @@ from color import Color
 class ExplodingSpace:
     """Represents an exploding matrix space, used on game over."""
 
-    def __init__(self, x: float, y: float, color: Color):
+    def __init__(self, x: float, y: float, color: Color) -> None:
         """Class constructor."""
         self.__x = float(x)
         self.__y = float(y)

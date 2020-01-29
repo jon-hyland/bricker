@@ -312,7 +312,7 @@ class Renderer:
 
         return matrix_surface
 
-    def draw_menu(self, matrix: Matrix, stats: GameStats, menu_selection: int, in_game: bool):
+    def draw_menu(self, matrix: Matrix, stats: GameStats, menu_selection: int, in_game: bool) -> None:
         """Draws the main menu frame."""
         width = 400
         spacing = 25
@@ -354,7 +354,7 @@ class Renderer:
         self.__screen.blit(frame, (0, 0))
         pygame.display.flip()
 
-    def draw_initials_input(self, matrix, stats, chars):
+    def draw_initials_input(self, matrix, stats, chars) -> None:
         """Draws the high score initials input frame."""
         width = 400
         spacing = 15

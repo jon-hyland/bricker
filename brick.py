@@ -156,7 +156,7 @@ class Brick:
                 break
         return bottom_space
 
-    def collision(self, matrix):
+    def collision(self, matrix) -> bool:
         """Returns true on brick collision."""
         for x in range(0, self.__width):
             for y in range(0, self.__height):
@@ -166,19 +166,19 @@ class Brick:
                     return True
         return False
 
-    def move_left(self, matrix):
+    def move_left(self, matrix) -> None:
         """Moves brick left, prevents collision."""
         self.__x -= 1
         if self.collision(matrix):
             self.__x += 1
 
-    def move_right(self, matrix):
+    def move_right(self, matrix) -> None:
         """Moves brick right, prevents collision."""
         self.__x += 1
         if self.collision(matrix):
             self.__x -= 1
 
-    def move_down(self, matrix):
+    def move_down(self, matrix) -> bool:
         """Moves brick down, prevents collision.  Returns true if move would have hit bottom."""
         self.__last_drop_time = perf_counter()
         self.__y += 1
@@ -187,14 +187,14 @@ class Brick:
             return True
         return False
 
-    def is_drop_time(self, interval):
+    def is_drop_time(self, interval) -> bool:
         """Returns true if its time to drop brick (gravity)."""
         now = perf_counter()
         elapsed = now - self.__last_drop_time
         drop_time = elapsed >= interval
         return drop_time
 
-    def rotate(self, matrix):
+    def rotate(self, matrix) -> None:
         """Rotates brick."""
 
         new_grid = [[0 for x in range(self.__width)] for y in range(self.__height)]

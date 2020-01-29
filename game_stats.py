@@ -58,7 +58,7 @@ class GameStats:
             scores = self.__sort_scores(scores)
         return scores
 
-    def __save_high_scores(self, scores: List['HighScore']):
+    def __save_high_scores(self, scores: List['HighScore']) -> None:
         """Save high scores to file."""
         scores = self.__sort_scores(scores)
         with open("high_scores.txt", "w") as text_file:

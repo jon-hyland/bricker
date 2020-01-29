@@ -43,23 +43,33 @@ class Bricker:
             interval *= 0.8
             self.__level_drop_intervals.append(interval)
 
+
     def main(self) -> None:
         """Runs main game logic."""
 
         # vars
         in_game = False
 
-        # menu loop
+        # program loop
         while True:
+
+            # get menu selection
             menu_selection = self.menu_loop(in_game)
+
+            # resume, run game loop
             if menu_selection == 1:
                 in_game = self.game_loop()
+
+            # start new game, run game loop
             elif menu_selection == 2:
                 self.new_game()
                 in_game = self.game_loop()
+
+            # quit program
             elif menu_selection == 3:
                 self.explode_spaces()
                 break
+
 
     def menu_loop(self, in_game: bool) -> int:
         """The main menu loop."""
@@ -105,7 +115,8 @@ class Bricker:
             # draw menu
             self.__renderer.draw_menu(self.__matrix, self.__stats, menu_selection, in_game)
 
-    def high_score_loop(self):
+
+    def high_score_loop(self) -> None:
         """The main menu loop."""
 
         # vars
@@ -145,8 +156,9 @@ class Bricker:
         initials = "".join(chars).lower()
         self.__stats.add_high_score(initials)
 
-    def game_loop(self):
-        """The main game loop."""
+
+    def game_loop(self) -> bool:
+        """The main game loop.  Returns true if still in game (menu opened)."""
 
         # vars
         game_over = False
@@ -223,18 +235,22 @@ class Bricker:
             self.high_score_loop()
         return False
 
+
     def new_game(self) -> None:
         """Resets state and starts a new game."""
         self.__stats = GameStats()
         self.__matrix.new_game()
 
+
     def move_brick_left(self) -> None:
         """Moves brick left."""
         self.__matrix.move_brick_left()
 
+
     def move_brick_right(self) -> None:
         """Moves brick right."""
         self.__matrix.move_brick_right()
+
 
     def move_brick_down(self) -> bool:
         """Moves brick down.  Returns true if brick hits bottom."""
@@ -243,9 +259,11 @@ class Bricker:
             self.__stats.increment_score(1)
         return hit
 
+
     def rotate_brick(self) -> None:
         """Rotates brick."""
         self.__matrix.rotate_brick()
+
 
     def drop_brick_to_bottom(self) -> None:
         """Animates a brick dropping to bottom of screen."""
@@ -260,6 +278,7 @@ class Bricker:
             self.__renderer.update_frame(self.__matrix, self.__stats, None)
         self.__stats.increment_score(2)
 
+
     def is_drop_time(self) -> bool:
         """Returns true if it's time for brick to drop."""
         if self.__matrix.brick is not None:
@@ -267,7 +286,8 @@ class Bricker:
             return self.__matrix.brick.is_drop_time(drop_interval)
         return False
 
-    def brick_hit(self):
+
+    def brick_hit(self) -> bool:
         """Executed when brick hits bottom and comes to rest.  Spawns new brick.  Returns true on new brick collision (game over)."""
         self.__matrix.add_brick_to_matrix()
         rows_to_erase = self.__matrix.identify_solid_rows()
@@ -289,6 +309,7 @@ class Bricker:
         collision = self.__matrix.spawn_brick()
         return collision
 
+
     def erase_filled_rows(self, rows_to_erase: List[int]) -> None:
         """Animates erasure of filled rows."""
         for x in range(1, 11):
@@ -299,10 +320,12 @@ class Bricker:
                 self.__renderer.event_pump()
                 self.__renderer.update_frame(self.__matrix, self.__stats, None)
 
+
     def drop_grid(self) -> None:
         """Drops hanging pieces to resting place."""
         while self.drop_grid_once():
             pass
+
 
     def drop_grid_once(self) -> bool:
         """Drops hanging pieces, bottom-most row."""
@@ -339,7 +362,8 @@ class Bricker:
             self.__matrix.color[x][1] = Colors.Black
         return True
 
-    def explode_spaces(self):
+
+    def explode_spaces(self) -> None:
         """Explodes matrix spaces outwards on game over."""
         self.__matrix.add_brick_to_matrix()
         spaces: List[ExplodingSpace] = []
